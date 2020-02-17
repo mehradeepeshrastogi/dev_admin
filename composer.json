@@ -1,0 +1,12 @@
+{
+    "name": "vendor/autoload",
+    "authors": [
+        {
+            "name": "Deepesh",
+            "email": "dev43@infoicon.co.in"
+        }
+    ],
+    "require": {
+        "tawba/push-notification": "^1.0"
+    }
+}

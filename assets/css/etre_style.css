@@ -1,0 +1,31 @@
+body {
+    background-color: #ffffff;
+}
+.page-wrepper {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+}
+.btn.btn-primary{
+    color: #fff;
+    background-color: #796d64;
+    border-color: #6b6058;
+    background-color: #796d64;
+} 
+.btn.btn-primary:hover, .btn.btn-primary:visited, .btn.btn-primary:focus, .btn.btn-primary:active{   
+    color: #fff;
+    background-color: #5d544d;
+    border-color: #4a423d;
+}
+.error{
+    color:red;
+}
+.sidebar {
+    width: 200px;
+    position: fixed;
+    top: 74px;
+    bottom: 0;
+    height: calc(100vh - 74px) !important;
+}
+.main-container {
+    margin-left: 200px;
+}
