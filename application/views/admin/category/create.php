@@ -4,7 +4,7 @@
     <section class="content-header">
       <h1><?php echo trans('add_category');?></h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i><?php echo trans('add_category');?></a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i><?php echo $title;?></a></li>
       </ol>
     </section>
 
@@ -29,7 +29,7 @@
 
               <div class="box-header with-border">
                   <div class="col-sm-6">
-                      <h3 class="box-title"><?php echo trans('add_category');?></h3>
+                      <h3 class="box-title"><?php echo $title;?></h3>
                   </div>
 
                   <div class="col-sm-4">

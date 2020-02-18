@@ -3,12 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends DR_Controller {
 	public $lang_id;
+	public $post_type;
 	public function __construct()
 	{
 		// create,edit,index,show,destroy
 		parent::__construct();
 		$adminData = $this->session->userdata('adminData');
 		$this->lang_id = !empty($adminData)?$adminData->lang_id:'1';
+		$this->post_type = $this->uri->segment(2);
 
 		if($this->lang_id==1){
 			$this->lang->load('admin','english');

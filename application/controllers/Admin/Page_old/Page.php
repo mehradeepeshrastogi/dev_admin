@@ -67,72 +67,98 @@ class Page extends Admin {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
 
+
+		if(!empty($_POST)){
+			$this->form_validation->set_rules('name[]',"Name", "trim|required");
+			// $this->form_validation->set_rules('description_short[]',"Short description", "trim|required");
+			$this->form_validation->set_rules('description[]',"Description", "trim|required");
+			$this->form_validation->set_rules('slug[]',"Slug", "trim|required");
+			$this->form_validation->set_rules('short_order',"Short order", "trim|required");
+
+			if($this->form_validation->run() == FALSE){
+				$this->session->set_flashdata('error', validation_errors());
+				 redirect($_SERVER['HTTP_REFERER']);	
+			}else{
+				$postData = $_POST;
+				$postData["post_type"] = "3";
+				$postData["languages"] = $this->data['languages'];
+				$post_id = $this->PostModel->createPost($postData);
+				if(!empty($post_id)){
+					$this->session->set_flashdata('success', trans('category_created'));
+		            redirect($_SERVER['HTTP_REFERER']);	
+				}else{
+					$this->session->set_flashdata('error', trans('something_wrong'));
+					redirect($_SERVER['HTTP_REFERER']);
+				}
+			}
+		}
+
 		$this->data['title'] = trans('add_page');
-		$this->data['form_action'] = base_url("admin/page/store");
+		$this->data['form_action'] = base_url("admin/post/create");
 		$this->data['back_action'] = base_url("admin/page");
-		$this->template('admin/page/create',$this->data);
+		$this->template('admin/post/create',$this->data);
     }
     
 
 
-	/* 
-		save data to database
-		@post method 
-	*/
-	public function store()
-	{
-		$this->form_validation->set_rules('name[]',"Name", "trim|required");
-		$this->form_validation->set_rules('description[]',"Description", "trim|required");
-		$this->form_validation->set_rules('slug',trans('slug'), "trim|required");
+	// /* 
+	// 	save data to database
+	// 	@post method 
+	// */
+	// public function store()
+	// {
+	// 	$this->form_validation->set_rules('name[]',"Name", "trim|required");
+	// 	$this->form_validation->set_rules('description[]',"Description", "trim|required");
+	// 	$this->form_validation->set_rules('slug',trans('slug'), "trim|required");
 
-		if($this->form_validation->run() == FALSE){
-			$this->session->set_flashdata('error', validation_errors());
-			$this->create();
-		}else{
-			$postData = $_POST;
+	// 	if($this->form_validation->run() == FALSE){
+	// 		$this->session->set_flashdata('error', validation_errors());
+	// 		$this->create();
+	// 	}else{
+	// 		$postData = $_POST;
 
-			//////////////////// Insert data in page table /////////////////////////
+	// 		//////////////////// Insert data in page table /////////////////////////
 
-			$page = [
-                'slug' => $postData['slug'],
-				'short_order' => $postData['short_order'],
-				'active' => $postData['active'],
-				'created_at' => $this->current_datetime,
-				'updated_at' => $this->current_datetime
-			];
-			$this->db->insert('page',$page);
-			$page_id = $this->db->insert_id();
+	// 		$page = [
+ //                'slug' => $postData['slug'],
+	// 			'short_order' => $postData['short_order'],
+	// 			'active' => $postData['active'],
+	// 			'created_at' => $this->current_datetime,
+	// 			'updated_at' => $this->current_datetime
+	// 		];
+	// 		$this->db->insert('page',$page);
+	// 		$page_id = $this->db->insert_id();
 
-			//////////////////// end Insert data in page table /////////////////////////
+	// 		//////////////////// end Insert data in page table /////////////////////////
 			
 
-			if(!empty($page_id)){
+	// 		if(!empty($page_id)){
 				
-				//////////////  Insert page Language data  ////////////////////////////
+	// 			//////////////  Insert page Language data  ////////////////////////////
 				
-				foreach($this->data['languages'] as $k=>$language){
-					$pageLang[] = [
-						'name' => $postData['name'][$language->lang_id],
-						'description' => $postData['description'][$language->lang_id],
-						'page_id' => $page_id,
-						'lang_id' => $language->lang_id
-					];
-				} // end foreach languages
+	// 			foreach($this->data['languages'] as $k=>$language){
+	// 				$pageLang[] = [
+	// 					'name' => $postData['name'][$language->lang_id],
+	// 					'description' => $postData['description'][$language->lang_id],
+	// 					'page_id' => $page_id,
+	// 					'lang_id' => $language->lang_id
+	// 				];
+	// 			} // end foreach languages
 
-				$this->db->insert_batch("page_lang",$pageLang);
+	// 			$this->db->insert_batch("page_lang",$pageLang);
 
-				////////////////////// end page language data ///////////////////////////
+	// 			////////////////////// end page language data ///////////////////////////
 			
 
-				$this->session->set_flashdata('success', trans('page_created'));
-                redirect($_SERVER['HTTP_REFERER']);	
-			}else{
-				$this->session->set_flashdata('error', trans('something_wrong'));
-				redirect($_SERVER['HTTP_REFERER']);
-			}
-		}
+	// 			$this->session->set_flashdata('success', trans('page_created'));
+ //                redirect($_SERVER['HTTP_REFERER']);	
+	// 		}else{
+	// 			$this->session->set_flashdata('error', trans('something_wrong'));
+	// 			redirect($_SERVER['HTTP_REFERER']);
+	// 		}
+	// 	}
 		
-    }
+ //    }
     
     /* 
 		show data using id

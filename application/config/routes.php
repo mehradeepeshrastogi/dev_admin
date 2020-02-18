@@ -78,26 +78,26 @@ $route['admin/user/destroy'] = 'Admin/User/User/destroy';
 $route['admin/user/updateStatus'] = 'Admin/User/User/updateStatus';
 
 
-$route['admin/post']  = 'Admin/Post/Post';
-$route['admin/post/(:num)'] ='Admin/Post/Post/index/$1';
-$route['admin/post/create'] ='Admin/Post/Post/create';
-$route['admin/post/store'] ='Admin/Post/Post/store';
-$route['admin/post/view/(:num)'] ='Admin/Post/Post/show/$1';
-$route['admin/post/edit/(:num)'] ='Admin/Post/Post/edit/$1';
-$route['admin/post/update/(:num)'] ='Admin/Post/Post/update/$1';
-$route['admin/post/destroy'] ='Admin/Post/Post/destroy';
-$route['admin/post/updateStatus'] ='Admin/Post/Post/updateStatus';
+$route['admin/page'] = $route['admin/post']  = 'Admin/Post/Post';
+$route['admin/page/(:num)'] = $route['admin/post/(:num)'] ='Admin/Post/Post/index/$1';
+$route['admin/page/create'] = $route['admin/post/create'] ='Admin/Post/Post/create';
+$route['admin/page/store'] = $route['admin/post/store'] ='Admin/Post/Post/store';
+$route['admin/page/view/(:num)'] = $route['admin/post/view/(:num)'] ='Admin/Post/Post/show/$1';
+$route['admin/page/edit/(:num)'] = $route['admin/post/edit/(:num)'] ='Admin/Post/Post/edit/$1';
+$route['admin/page/update/(:num)'] = $route['admin/post/update/(:num)'] ='Admin/Post/Post/update/$1';
+$route['admin/page/destroy'] = $route['admin/post/destroy'] ='Admin/Post/Post/destroy';
+$route['admin/page/updateStatus']  = $route['admin/post/updateStatus'] ='Admin/Post/Post/updateStatus';
 
 
-$route['admin/page']  = 'Admin/Page/Page';
-$route['admin/page/(:num)'] ='Admin/Page/Page/index/$1';
-$route['admin/page/create'] ='Admin/Page/Page/create';
-$route['admin/page/store'] ='Admin/Page/Page/store';
-$route['admin/page/view/(:num)'] ='Admin/Page/Page/show/$1';
-$route['admin/page/edit/(:num)'] ='Admin/Page/Page/edit/$1';
-$route['admin/page/update/(:num)'] ='Admin/Page/Page/update/$1';
-$route['admin/page/destroy'] ='Admin/Page/Page/destroy';
-$route['admin/page/updateStatus'] ='Admin/Page/Page/updateStatus';
+// $route['admin/page']  = 'Admin/Page/Page';
+// $route['admin/page/(:num)'] ='Admin/Page/Page/index/$1';
+// $route['admin/page/create'] ='Admin/Page/Page/create';
+// $route['admin/page/store'] ='Admin/Page/Page/store';
+// $route['admin/page/view/(:num)'] ='Admin/Page/Page/show/$1';
+// $route['admin/page/edit/(:num)'] ='Admin/Page/Page/edit/$1';
+// $route['admin/page/update/(:num)'] ='Admin/Page/Page/update/$1';
+// $route['admin/page/destroy'] ='Admin/Page/Page/destroy';
+// $route['admin/page/updateStatus'] ='Admin/Page/Page/updateStatus';
 
 
 $route['admin/menu']  = 'Admin/Menu/Menu';

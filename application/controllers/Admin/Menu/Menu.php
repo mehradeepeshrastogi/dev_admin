@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(ADMIN_CONTROLLER_PATH.'Admin.php');
 
 class Menu extends Admin {
-	
 	public function __construct()
 	{
 		parent::__construct();
@@ -68,15 +67,11 @@ class Menu extends Admin {
 		$category_data = [];
 		$page_data = [];
 		$post_data = [];
-		if (!empty($this->session->flashdata('error'))) {
-			$this->data['error'] = $this->session->flashdata('error');
-		}else if (!empty($this->session->flashdata('success'))) {
-			$this->data['success'] = $this->session->flashdata('success');
-		}
-		$categoryData = $this->db->select("c.category_id,cl.name")->from("category as c")->join("category_lang as cl","cl.category_id = c.category_id","left")->where(["cl.lang_id" => $this->lang_id,"c.active" => "1"])->get();
-		$pageData = $this->db->select("p.page_id,pl.name")->from("page as p")->join("page_lang as pl","pl.page_id = p.page_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1"])->get();
 
-		$postData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1"])->get();
+		$categoryData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "2"])->get();
+		$pageData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "3"])->get();
+
+		$postData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "1"])->get();
 
 		if($categoryData->num_rows() > 0){
 			$category_data = $categoryData->result_array();
@@ -89,14 +84,41 @@ class Menu extends Admin {
 			$post_data = $postData->result_array();
 		}
 
+		if(!empty($_POST)){
+			
+			$this->form_validation->set_rules('name',"Name", "trim|required");
+			$this->form_validation->set_rules('post_ids[]',"Post Ids", "trim|required");
+
+			if($this->form_validation->run() == FALSE){
+				$this->session->set_flashdata('error', validation_errors());
+			}else{
+				$postData = $_POST;
+				$post_ids = $postData["post_ids"];
+				$menuData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1"])->where_in("p.post_id",$post_ids)->get()->result_array();
+				$this->data["menu_data"] = $menuData;
+				$this->data['menu_form_action'] = base_url("admin/menu/createMenu");
+			}
+		}
+
+		if (!empty($this->session->flashdata('error'))) {
+			$this->data['error'] = $this->session->flashdata('error');
+		}else if (!empty($this->session->flashdata('success'))) {
+			$this->data['success'] = $this->session->flashdata('success');
+		}
+		
+
 		$this->data['title'] = trans('add_menu');
 		$this->data['image_range'] = "4";
-		$this->data['form_action'] = base_url("admin/menu/store");
+		$this->data['form_action'] = base_url("admin/menu/create");
 		$this->data['back_action'] = base_url("admin/menu");
 		$this->data['category_data'] = $category_data; 
 		$this->data['page_data'] = $page_data;
 		$this->data['post_data'] = $post_data;
 		$this->template('admin/menu/create',$this->data);
+    }
+
+    public function createMenu(){
+    	dd($_POST);
     }
     
 

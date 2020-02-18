@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(ADMIN_CONTROLLER_PATH.'Admin.php');
 
 class Post extends Admin {
-	
 	public function __construct()
 	{
 		parent::__construct();
@@ -22,13 +21,22 @@ class Post extends Admin {
 
 		$config = [];
 		$search = "";
-		$condition = ["post_type" => "1"];
+		$post_type = "3";
+		$title = trans('pages');
+		$add_post = trans('add_page');
+		if($this->post_type == "post"){
+			$post_type = "1";
+			$title = trans('posts');
+			$add_post = trans('add_post');
+		}
 		if(!empty($_GET['search'])){
 			$search = $_GET['search'];
 		}
-		$this->data['title'] = trans('Posts');
-		$this->data['form_action'] = base_url('admin/post');
-		$this->data['add_page'] = base_url('admin/post/create');
+		$condition = ["post_type" => $post_type];
+		$this->data['title'] = $title;
+		$this->data['add_post_title'] = $add_post;
+		$this->data['form_action'] = base_url('admin/'.$this->post_type);
+		$this->data['add_post'] = base_url('admin/'.$this->post_type.'/create');
 		$this->data['search'] = $search;
 		$total_row = $this->PostModel->count($condition,$search);
 		$config = $this->config->item("pagination_config");
@@ -39,8 +47,7 @@ class Post extends Admin {
 		if(!empty($search)){
 			$config['suffix'] = "?search=$search";
 		}
-		
-		
+			
 		$this->pagination->initialize($config);
 		if($this->uri->segment(3)){
 			$page = ($this->uri->segment(3)) ;
@@ -62,78 +69,46 @@ class Post extends Admin {
 	*/
 	public function create()
 	{
+		
+
+		if(!empty($_POST)){
+			$this->form_validation->set_rules('name[]',"Name", "trim|required");
+			$this->form_validation->set_rules('description[]',"Description", "trim|required");
+			$this->form_validation->set_rules('slug[]',trans('slug'), "trim|required");
+
+			if($this->form_validation->run() == FALSE){
+				$this->session->set_flashdata('error', validation_errors());
+				 // redirect($_SERVER['HTTP_REFERER']);
+			}else{
+				$post_type = ($this->post_type == "post")?"1":"3";
+				$postData = $_POST;
+				$postData["post_type"] = $post_type;
+				$postData["languages"] = $this->data['languages'];
+				$post_id = $this->PostModel->createPost($postData);
+				if(!empty($post_id)){
+					$this->session->set_flashdata('success', trans($this->post_type.'_created'));
+		            redirect($_SERVER['HTTP_REFERER']);	
+				}else{
+					$this->session->set_flashdata('error', trans('something_wrong'));
+					redirect($_SERVER['HTTP_REFERER']);
+				}
+			}
+		}
+
 		if (!empty($this->session->flashdata('error'))) {
 			$this->data['error'] = $this->session->flashdata('error');
 		}else if (!empty($this->session->flashdata('success'))) {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
 
-		$this->data['title'] = trans('add_page');
-		$this->data['form_action'] = base_url("admin/page/store");
-		$this->data['back_action'] = base_url("admin/page");
-		$this->template('admin/page/create',$this->data);
+		$this->data['title'] = trans('add_'.$this->post_type);
+		$this->data['form_action'] = base_url("admin/".$this->post_type."/create");
+		$this->data['back_action'] = base_url("admin/".$this->post_type);
+		$this->template('admin/post/create',$this->data);
     }
     
 
 
-	/* 
-		save data to database
-		@post method 
-	*/
-	public function store()
-	{
-		$this->form_validation->set_rules('name[]',"Name", "trim|required");
-		$this->form_validation->set_rules('description[]',"Description", "trim|required");
-		$this->form_validation->set_rules('slug',trans('slug'), "trim|required");
-
-		if($this->form_validation->run() == FALSE){
-			$this->session->set_flashdata('error', validation_errors());
-			$this->create();
-		}else{
-			$postData = $_POST;
-
-			//////////////////// Insert data in page table /////////////////////////
-
-			$page = [
-                'slug' => $postData['slug'],
-				'short_order' => $postData['short_order'],
-				'active' => $postData['active'],
-				'created_at' => $this->current_datetime,
-				'updated_at' => $this->current_datetime
-			];
-			$this->db->insert('page',$page);
-			$page_id = $this->db->insert_id();
-
-			//////////////////// end Insert data in page table /////////////////////////
-			
-
-			if(!empty($page_id)){
-				
-				//////////////  Insert page Language data  ////////////////////////////
-				
-				foreach($this->data['languages'] as $k=>$language){
-					$pageLang[] = [
-						'name' => $postData['name'][$language->lang_id],
-						'description' => $postData['description'][$language->lang_id],
-						'page_id' => $page_id,
-						'lang_id' => $language->lang_id
-					];
-				} // end foreach languages
-
-				$this->db->insert_batch("page_lang",$pageLang);
-
-				////////////////////// end page language data ///////////////////////////
-			
-
-				$this->session->set_flashdata('success', trans('page_created'));
-                redirect($_SERVER['HTTP_REFERER']);	
-			}else{
-				$this->session->set_flashdata('error', trans('something_wrong'));
-				redirect($_SERVER['HTTP_REFERER']);
-			}
-		}
-		
-    }
     
     /* 
 		show data using id
@@ -163,13 +138,12 @@ class Post extends Admin {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
 
-		$this->data['title'] = trans('edit_page');
-		$this->data['image_range'] = "4";
-		$this->data['form_action'] = base_url("admin/page/update/".$id);
-		$this->data['back_action'] = base_url("admin/page");
-		$page = $this->PageModel->getPage($id);
-		$this->data['page'] = $page;
-		$this->template('admin/page/edit',$this->data);
+		$this->data['title'] = trans('edit_'.$this->post_type);
+		$this->data['form_action'] = base_url("admin/".$this->post_type."/update/".$id);
+		$this->data['back_action'] = base_url("admin/".$this->post_type);
+		$post = $this->PostModel->getPost($id);
+		$this->data['post'] = $post;
+		$this->template('admin/post/edit',$this->data);
 
 	}
 
@@ -215,10 +189,10 @@ class Post extends Admin {
 	}
 
 	public function updateStatus(){
-		$page_id = $_POST['id'];
+		$post_id = $_POST['id'];
 		unset($_POST['id']);
-		$msg = ($_POST['active'] == 1)?'page_activated':'page_deactivated';
-		$this->db->where(["page_id" => $page_id])->update("page",$_POST);
+		$msg = ($_POST['active'] == 1)?$this->post_type.'_activated':$this->post_type.'_deactivated';
+		$this->db->where(["post_id" => $post_id])->update("post",$_POST);
 		$this->session->set_flashdata('success', trans($msg));
         redirect($_SERVER['HTTP_REFERER']);	
 	}
@@ -233,9 +207,9 @@ class Post extends Admin {
 	
 	public function destroy()
 	{
-		$page_id = $this->input->post('id');
-		$this->db->where(["page_id" => $page_id])->delete(["page_image","page_lang","page"]);
-		$this->session->set_flashdata('success', trans('page_deleted'));
+		$post_id = $this->input->post('id');
+		$this->db->where(["post_id" => $post_id])->delete(["post_lang","post"]);
+		$this->session->set_flashdata('success', trans($this->post_type.'_deleted'));
         redirect($_SERVER['HTTP_REFERER']);	
 	}
 

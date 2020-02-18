@@ -59,10 +59,23 @@ Class PostModel extends DR_Model {
     }
 
 
+    public function getPost($post_id){
+        $result = [];
+        $query = $this->db->select("p.*,pl.lang_id,pl.name,pl.description_short,pl.description,slug,pl.meta_title,pl.meta_keyword,pl.meta_description")
+        ->from("post as p")
+        ->join("post_lang as pl","pl.post_id = p.post_id","left")
+        ->where(["p.post_id" => $post_id])
+        ->get();
+        if($query->num_rows() > 0){
+            $result = $query->result();
+        }
+        return $result;
+    }
 
     /* 
         get all categories with pagination
     */
+    
 
     public function getPosts($condition,$limit,$start,$search=null){
         $resultData = [];
