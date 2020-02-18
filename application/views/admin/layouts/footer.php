@@ -51,8 +51,6 @@
 <script src="<?php echo ADMIN_URL_FILE; ?>bower_components/ckeditor/ckeditor.js"></script>
 <!-- fullCalendar -->
 
-<script src="<?php echo ADMIN_URL_FILE; ?>js/jquery.multiselect.js"></script>
-
 <script>
 $(document).ready(function(){
   if($('#description').length){
@@ -117,20 +115,6 @@ $('.switchLang').on('change', function (e) {
       location.reload();
     }
 });
-
-<?php 
-  if($this->post_type == "menu" && (($this->method == "create") || ($this->method == "create")))
-  {
-?>
-    $(".multi_select_option").multiselect({
-        columns: 1,
-        // placeholder: 'Select Recruiters',
-        search: true,
-        selectAll: true
-    });
-<?php 
-  }
-?>
 </script>
 </body>
 </html>

@@ -3,9 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(ADMIN_CONTROLLER_PATH.'Admin.php');
 
 class Post extends Admin {
+	public $post_type;
 	public function __construct()
 	{
 		parent::__construct();
+		$this->post_type = $this->uri->segment(2);
     }
 	
 	/* 
