@@ -63,12 +63,7 @@ class Category extends Admin {
 	*/
 	public function create()
 	{
-		if (!empty($this->session->flashdata('error'))) {
-			$this->data['error'] = $this->session->flashdata('error');
-		}else if (!empty($this->session->flashdata('success'))) {
-			$this->data['success'] = $this->session->flashdata('success');
-		}
-
+		
 		if(!empty($_POST)){
 			$this->form_validation->set_rules('name[]',"Name", "trim|required");
 			$this->form_validation->set_rules('description_short[]',"Short description", "trim|required");
@@ -77,7 +72,6 @@ class Category extends Admin {
 
 			if($this->form_validation->run() == FALSE){
 				$this->session->set_flashdata('error', validation_errors());
-				 redirect($_SERVER['HTTP_REFERER']);	
 			}else{
 				$postData = $_POST;
 				$postData["post_type"] = "2";
@@ -91,6 +85,12 @@ class Category extends Admin {
 					redirect($_SERVER['HTTP_REFERER']);
 				}
 			}
+		}
+
+		if (!empty($this->session->flashdata('error'))) {
+			$this->data['error'] = $this->session->flashdata('error');
+		}else if (!empty($this->session->flashdata('success'))) {
+			$this->data['success'] = $this->session->flashdata('success');
 		}
 
 		$this->data['title'] = trans('add_category');
@@ -111,7 +111,7 @@ class Category extends Admin {
 	{
 		$this->data['title'] = trans('category_details');
 		$this->data['id'] = $id;
-		$this->data['category'] = $this->CategoryModel->getCategory($id);
+		$this->data['post'] = $this->PostModel->getPost($id);
 		$this->template('admin/category/show',$this->data);
     }
     
@@ -124,6 +124,29 @@ class Category extends Admin {
 
 	public function edit($id)
 	{
+		if(!empty($_POST)){
+			$this->form_validation->set_rules('name[]',"Name", "trim|required");
+			$this->form_validation->set_rules('description_short[]',"Short description", "trim|required");
+			$this->form_validation->set_rules('slug[]',"Slug", "trim|required");
+			$this->form_validation->set_rules('short_order',"Short order", "trim|required");
+
+			if($this->form_validation->run() == FALSE){
+				$this->session->set_flashdata('error', validation_errors());
+			}else{
+				$postData = $_POST;
+				$postData["post_type"] = "2";
+				$postData["languages"] = $this->data['languages'];
+				$post_id = $this->PostModel->updatePost($postData,$id);
+				if(!empty($post_id)){
+					$this->session->set_flashdata('success', trans('category_updated'));
+		            redirect($_SERVER['HTTP_REFERER']);	
+				}else{
+					$this->session->set_flashdata('error', trans('something_wrong'));
+					redirect($_SERVER['HTTP_REFERER']);
+				}
+			}
+		}
+
 		if (!empty($this->session->flashdata('error'))) {
 			$this->data['error'] = $this->session->flashdata('error');
 		}else if (!empty($this->session->flashdata('success'))) {
@@ -132,57 +155,14 @@ class Category extends Admin {
 
 		$this->data['title'] = trans('edit_category');
 		$this->data['image_range'] = "4";
-		$this->data['form_action'] = base_url("admin/category/update/".$id);
+		$this->data['form_action'] = base_url("admin/category/edit/".$id);
 		$this->data['back_action'] = base_url("admin/category");
-		$category = $this->CategoryModel->getCategory($id);
-		$this->data['category'] = $category;
+		$post = $this->PostModel->getPost($id);
+		$this->data['post'] = $post;
 		$this->template('admin/category/edit',$this->data);
 
 	}
 
-
-
-	/* 
-		update data using id
-		@post method
-	*/
-	
-	public function update($category_id)
-	{
-		$postData = $_POST;
-		// dd($postData);
-		$category = [
-			'short_order' => $postData['short_order'],
-			'slug' => $postData['slug'],
-			'active' => $postData['active'],
-			'created_at' => $this->current_datetime,
-			'updated_at' => $this->current_datetime
-		];
-		$this->db->where('category_id',$category_id)->update('category',$category);
-		$this->db->where('category_id',$category_id)->delete(["category_lang"]);
-
-		//////////////  Insert Category Language data  ////////////////////////////
-				
-		foreach($this->data['languages'] as $k=>$language){
-			$categoryLang[] = [
-				'name' => $postData['name'][$language->lang_id],
-				'description_short' => $postData['description_short'][$language->lang_id],
-				// 'description' => $postData['description'][$language->lang_id],
-				'category_id' => $category_id,
-				'lang_id' => $language->lang_id
-			];
-		} // end foreach languages
-
-		$this->db->insert_batch("category_lang",$categoryLang);
-
-		////////////////////// end category language data ///////////////////////////
-
-		
-		$this->session->set_flashdata('success', trans('category_updated'));
-        redirect($_SERVER['HTTP_REFERER']);	
-
-		
-	}
 
 	public function updateStatus(){
 		$post_id = $_POST['id'];

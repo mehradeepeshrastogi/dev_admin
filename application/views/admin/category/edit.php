@@ -2,9 +2,9 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1><?php echo trans('edit_category');?></h1>
+      <h1><?php echo trans('add_category');?></h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i><?php echo trans('edit_category');?></a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i><?php echo $title;?></a></li>
       </ol>
     </section>
 
@@ -20,7 +20,7 @@
               echo "<div class=' alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>".$success."</div>";
             }
             ?>
-		    </div>
+        </div>
 
         <!-- left column -->
         <div class="col-md-12">
@@ -29,7 +29,7 @@
 
               <div class="box-header with-border">
                   <div class="col-sm-6">
-                      <h3 class="box-title"><?php echo trans('edit_category');?></h3>
+                      <h3 class="box-title"><?php echo $title;?></h3>
                   </div>
 
                   <div class="col-sm-4">
@@ -48,19 +48,12 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#Category" data-toggle="tab"><?php echo trans('category');?></a></li>
-                    <li><a href="#category_short_description" data-toggle="tab"><?php echo trans('category_short_description');?></a></li>
-                    <?php /*
-                    <li><a href="#category_description" data-toggle="tab"><?php echo trans('category_description');?></a></li>
-                    <li><a href="#category_image" data-toggle="tab"><?php echo trans('category_image');?></a></li>
-                    */ ?>
-                  
                 </ul>
             </div>
 
             <!-- form start -->
             <form role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
 
-            <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
 
             <!-- box body start -->
 
@@ -87,25 +80,29 @@
                         <div class="form-group">
                             <label for="<?php echo trans('category_name');?>"><?php echo trans('category_name');?></label>
                             <?php foreach($languages as $k=>$language): ?>
-                                <input type="text" class="form-control" name="name[<?php echo $language->lang_id;?>]" value="<?php echo @$category[$k]->name;?>" placeholder="<?php echo trans('category_name');?>" >
+                                <input type="text" class="form-control" name="name[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->name; ?>" placeholder="<?php echo trans('category_name');?>">
                             <?php endforeach; ?>
 
                           </div>
                       </div>
 
-                       <div class="col-md-12">
+                      <div class="col-md-12">
                           <div class="form-group">
                               <label for="<?php echo trans('slug');?>"><?php echo trans('slug');?>:</label>
-                              <span style="display: block;"><?php echo base_url('category/');?><input type="text" class="form-control" name="slug" value="<?php echo $category[0]->slug;?>" placeholder="<?php echo trans('slug');?>" style="width: 77.7%;display: inline-block;">
+                               <?php foreach($languages as $k=>$language): ?>
+                              <span style="display: block;"><?php echo base_url();?>
+                              <input type="text" class="form-control" name="slug[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->slug; ?>" placeholder="<?php echo trans('slug');?>" style="width: 77.7%;display: inline-block;">
                               </span>
+                               <?php endforeach; ?>
 
                           </div>
                       </div>
 
+
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="<?php echo trans('short_order');?>"><?php echo trans('short_order');?></label>
-                              <input type="number" min="0" class="form-control" name="short_order" value="<?php echo $category[0]->short_order;?>" placeholder="<?php echo trans('short_order');?>">
+                              <input type="number" min="0" class="form-control" name="short_order" value="<?php echo $post[0]->short_order;?>" placeholder="<?php echo trans('short_order');?>">
 
                           </div>
                       </div>
@@ -118,23 +115,15 @@
                             <div class="form-group">
                                 <label for="<?php echo trans('status');?>"><?php echo trans('status');?></label>
                                 <select class="form-control" name="active">
-                                    <option value="1" <?php echo ($category[0]->active==1)?'selected':'';?> >
+                                    <option value="1" <?php echo ($post[0]->active == 1)?'selected':'';?> >
                                       <?php echo trans('active');?>
                                     </option>
-                                    <option value="0" <?php echo ($category[0]->active==0)?'selected':'';?>><?php echo trans('inactive');?></option> 
+                                    <option value="0" <?php echo ($post[0]->active == 0)?'selected':'';?>><?php echo trans('inactive');?></option> 
                                 </select>
                               </div>
                           </div>
 
                       <!-- end category status section -->
-
-                    </div>  
-                    <!-- end category tab section -->
-
-                
-                    <!-- start category_short_description tab -->
-
-                    <div class="tab-pane" id="category_short_description">
 
                        <!-- start category_short_description section -->
 
@@ -151,55 +140,19 @@
                             <div class="form-group">
                                   <label for="<?php echo trans('category_short_description');?>"><?php echo trans('category_short_description');?></label>
                                   <?php foreach($languages as $k=>$language): ?>
-                                      <textarea type="text" class="form-control" name="description_short[<?php echo $language->lang_id;?>]" placeholder="<?php echo trans('category_short_description');?>"><?php echo $category[$k]->description_short;?></textarea>
+                                      <textarea type="text" class="form-control" name="description_short[<?php echo $language->lang_id;?>]" placeholder="<?php echo trans('category_short_description');?>"><?php echo $post[$k]->description_short; ?></textarea>
                                   <?php endforeach; ?>
                             </div>
                         </div>
                       
                         <!-- end category_short_description section -->
 
-                    </div> 
-                    <!-- end category_short_description tab -->
+                    </div>  
+                    <!-- end category tab section -->
 
+               
+                    <!-- start category_short_description tab -->
 
-<?php 
-/*   
-                    
-                     <!-- start category_description tab -->
-
-                    <div class="tab-pane" id="category_description">
-
-                      <!-- start category_description section -->
-
-                        <div class="col-md-12" style="margin-left:-15px;">
-                              <div class="col-md-2">
-                                <label for="<?php echo trans('language');?>"><?php echo trans('language');?></label>
-                              </div>
-                              <div class="col-md-10">
-                                  <label for="<?php echo trans('category_description');?>"><?php echo trans('category_description');?></label>
-                              </div>
-                        </div>
-
-                            
-                        <?php foreach($languages as $k=>$language): ?>
-                          <div class="col-md-12" style="margin-left:-15px;<?php echo ($k>0)?'margin-top:50px':'';?>" >
-                              <div class="col-md-2">
-                                  <input type="text" class="form-control" value="<?php echo trans($language->name);?>" readonly style="height:300px;">
-                              </div>
-                              <div class="col-md-10">
-                                  <textarea type="text" class="form-control" id="description_<?php echo $language->lang_id;?>" name="description[<?php echo $language->lang_id;?>]" placeholder="<?php echo trans('category_description');?>"><?php echo @$category[$k]->description;?></textarea>
-                              </div>
-                          </div>
-                        <?php endforeach; ?>
-                      
-                      <!-- end category_description section -->
-
-                    </div>
-                     <!-- end category_description tab -->
-
-                
-*/ 
-?>
                   </div>  <!-- end tab-content-->  
               </div>
               <!-- /.box-body -->
@@ -207,7 +160,7 @@
               <div class="box-footer">
                 <button type="submit" class="btn btn-primary float-right"><?php echo trans('submit');?></button>
               </div>
-			
+      
             </form>
 
           </div>

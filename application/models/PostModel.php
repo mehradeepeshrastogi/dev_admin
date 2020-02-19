@@ -58,6 +58,42 @@ Class PostModel extends DR_Model {
 
     }
 
+    public function updatePost($postData,$post_id){
+        $post = [
+                'short_order' => $postData['short_order'],
+                'active' => $postData['active'],
+                'post_type' => $postData['post_type'],
+                'created_at' => $this->current_datetime,
+                'updated_at' => $this->current_datetime
+            ];
+        $this->db->where(["post_id" => $post_id])->update('post',$post);
+        if(!empty($post_id) && !empty($postData["languages"])){
+            $this->db->where(["post_id" => $post_id])->delete("post_lang");
+            foreach($postData["languages"] as $k=>$language){
+                    $description_short = !empty($postData['description_short'][$language->lang_id])?$postData['description_short'][$language->lang_id]:'';
+                    $description = !empty($postData['description'][$language->lang_id])?$postData['description'][$language->lang_id]:'';
+                    $meta_title = !empty($postData['meta_title'][$language->lang_id])?$postData['meta_title'][$language->lang_id]:'';
+                    $meta_keyword = !empty($postData['meta_keyword'][$language->lang_id])?$postData['meta_keyword'][$language->lang_id]:'';
+                    $meta_description = !empty($postData['meta_description'][$language->lang_id])?$postData['meta_description'][$language->lang_id]:'';
+                    $postLang[] = [
+                        'post_id' => $post_id,
+                        'name' => $postData['name'][$language->lang_id],
+                        'description_short' => $description_short,
+                        'description' => $description,
+                        'slug' => $postData['slug'][$language->lang_id],
+                        'meta_title' => $meta_title,
+                        'meta_keyword' => $meta_keyword,
+                        'meta_description' => $meta_description,
+                        'lang_id' => $language->lang_id
+                    ];
+                } // end foreach languages
+            $this->db->insert_batch("post_lang",$postLang);
+        }
+        return $post_id;
+
+    }
+
+
 
     public function getPost($post_id){
         $result = [];

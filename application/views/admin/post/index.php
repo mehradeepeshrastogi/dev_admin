@@ -76,7 +76,6 @@
                       <td><?php //echo $post->slug; ?></td>
                       <td>
                         <form action="<?php echo base_url($this->controllerFor.'/post/updateStatus');?>" method="post">
-                        <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
                             <?php if($post->active == 1){ ?>
                               <input type="hidden" name="active" value="0">
                               <button type="submit" name="id" value="<?php echo $post->post_id;?>" title="<?php trans('disable');?>" class="btn btn-success"><i class="fa fa-thumbs-up"></i></button>
@@ -99,7 +98,7 @@
                      
 
                         <form action="<?php echo base_url($this->controllerFor.'/'.$this->post_type.'/destroy');?>" method="post" class="inline" >
-                           <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+                        
                           <button onclick="return confirm('<?php echo trans('are_you_sure_to_delete')?>');" type="submit" name="id" value="<?php echo $post->post_id;?>" title="<?php echo trans('delete');?>" class="btn btn-danger"><span class="fa fa-trash"></span></button>
                         </form>
 

@@ -52,7 +52,7 @@
                                 <?php foreach($languages as $k=>$language){ ?>
                                       <tr>
                                           <th><?php echo trans($language->name); ?></th>
-                                          <td><?php echo @$category[$k]->name; ?></td>
+                                          <td><?php echo @$post[$k]->name; ?></td>
                                       </tr>
                                 <?php } ?>
                                     </p>
@@ -66,7 +66,7 @@
                                <tr>
                                     <th>Status</th>
                                     <td> 
-                                    <?php if($category[0]->active == '1'): ?>
+                                    <?php if($post[0]->active == '1'): ?>
                                         <label class="label label-success"> <?php echo trans('active');?></label>
                                     <?php else: ?>
                                         <label class="label label-danger"> <?php echo trans('inactive');?></label>
@@ -93,7 +93,7 @@
                                 <?php foreach($languages as $k=>$language){ ?>
                                       <tr>
                                           <th><?php echo trans($language->name); ?></th>
-                                          <td><?php echo @$category[$k]->description_short; ?></td>
+                                          <td><?php echo @$post[$k]->description_short; ?></td>
                                       </tr>
                                 <?php } ?>
                                     </p>
