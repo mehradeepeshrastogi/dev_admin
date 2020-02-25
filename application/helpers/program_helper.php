@@ -73,6 +73,18 @@ if (!function_exists('dd'))
 	}
 }
 
+/*
+	 dump = dump & die;
+*/
+
+if (!function_exists('dump'))
+{
+	function dump($data)
+	{
+		echo"<pre>";print_r($data);echo"</pre>";
+	}
+}
+
 
 /*
 	 dd = dump json;
@@ -109,3 +121,42 @@ if (!function_exists('unlinkFile'))
 	}
 }
 
+
+if (!function_exists('array_multi_str'))
+{
+	function array_multi_str($arrayData,$find_key,$child_key){
+		$post_ids = "";
+		$preFlag = false;
+		$k=0;
+		foreach($arrayData as $arr_data){
+			if(array_key_exists($find_key, $arr_data)){
+				$pre = ",";
+				if($k==0 && $preFlag == false){
+					$pre = "";
+					$preFlag = true;
+				}
+				$post_ids .= $pre.$arr_data[$find_key];
+				if(array_key_exists($child_key, $arr_data)){
+					$pre = ",";
+					if($k == 0 && $preFlag == false){
+						$pre = "";
+						$preFlag = true;
+					}
+					$post_ids .= $pre.array_multi_str($arr_data[$child_key],$find_key,$child_key);
+				}
+				$k++;
+			}
+		}
+		return $post_ids;
+	}
+}
+
+
+if (!function_exists('array_multi_column'))
+{
+	function array_multi_column($arrayData,$find_key,$child_key){
+		$array_multi_str = array_multi_str($arrayData,$find_key,$child_key);
+		$post_ids_arr = explode(",", $array_multi_str);
+		return $post_ids_arr;
+	}
+}

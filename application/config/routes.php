@@ -109,6 +109,8 @@ $route['admin/menu/edit/(:num)'] ='Admin/Menu/Menu/edit/$1';
 $route['admin/menu/update/(:num)'] ='Admin/Menu/Menu/update/$1';
 $route['admin/menu/destroy'] ='Admin/Menu/Menu/destroy';
 $route['admin/menu/updateStatus'] ='Admin/Menu/Menu/updateStatus';
+$route['admin/menu/createMenu'] ='Admin/Menu/Menu/createMenu';
+$route['admin/menu/createMenu/(:num)'] ='Admin/Menu/Menu/createMenu/$1';
 
 
 

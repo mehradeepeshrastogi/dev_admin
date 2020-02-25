@@ -44,9 +44,12 @@
             <!-- /.box-header -->
             <!-- form start -->
             <div class="box-body">
-            <div class="col-md-3">    
-                <form  id="create_menu" role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
-              
+            <div class="col-md-4">    
+                <form role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
+               <?php /* <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
+               */
+               ?>
+
                       <div class="col-md-12">
                           <div class="form-group">
                             <label for="<?php echo trans('category');?>"><?php echo trans('name');?></label>
@@ -119,7 +122,7 @@
                   <!-- /.box-body -->
 
                   <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Create Menu<?php //echo trans('submit');?></button>
+                    <button type="submit" class="btn btn-primary"><?php echo trans('submit');?></button>
                   </div>
     			
                 </form>
@@ -127,76 +130,28 @@
               <?php 
               if(!empty($menu_data)){
               ?>
-               <div class="col-md-9">    
-              
-                    <!--  Start menu row  -->
-                    <div class="row">
-                        <div class="col-md-8">
-                          <div class="card mb-3">
-                            <div class="card-header"><h5 class="float-left">Menu</h5>
-                              <div class="float-right">
-                                  <button id="btnReload" type="button" class="btn btn-outline-secondary">
-                                      <i class="fa fa-play"></i> Load Data</button>
-                              </div>
-                            </div>
-                            <div class="card-body">
-                              <ul id="myEditor" class="sortableLists list-group">
-                              </ul>
-                            </div>
+               <div class="col-md-8">    
+                <form role="form" action="<?php echo $menu_form_action; ?>" method="POST" enctype="multipart/form-data">
+                  <?php /*
+                    <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
+                    */
+                    ?>
+
+                      <div class="col-md-6">
+                          <div class="form-group">
+                            <ul class="list-group">
+                              <?php 
+                              foreach($menu_data as $menu){
+                              ?>
+                                <li class="list-group-item" id="<?php echo $menu["post_id"];?>"><?php echo $menu["name"];?></li>
+                              <?php 
+                              }
+                              ?>
+                            </ul>  
                           </div>
-
-                            <form id="menu_form_data" action="<?php echo $menu_form_action;?>" method="POST">
-                              <label for="Menu Name">Menu Name</label>
-                              <input type="text" class="form-control" value="<?php echo !empty($form_post_data['name'])?$form_post_data['name']:'';?>" name="name">
-                              <br>
-                              <input type="hidden" value="<?php echo $this->lang_id;?>" name="lang_id">
-                              <textarea style="display: none;" id="out" name="menu_description" class="form-control" cols="50" rows="10"></textarea>
-                              <button id="btnOutput" type="button" class="btn btn-success"><i class="fas fa-check-square"></i> Save menu</button>
-                            </form>
-
-                        </div>
-
-                          <div class="col-md-4">
-                              <div class="panel panel-default mb-3">
-                              <div class="panel-head">Edit item</div>
-                              <div class="panel-body">
-                              <form id="frmEdit" class="form-horizontal">
-                            
-                                  <div class="form-group">
-                                      <label for="text">Text</label>
-                                      <input type="text" class="form-control item-menu" name="text" id="text" placeholder="Text">
-                                  </div>
-
-                                  <div class="form-group">
-                                      <label for="href">URL</label>
-                                      <input type="text" class="form-control item-menu" id="href" name="href" placeholder="URL">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="target">Target</label>
-                                      <select name="target" id="target" class="form-control item-menu">
-                                          <option value="_self">Self</option>
-                                          <option value="_blank">Blank</option>
-                                          <option value="_top">Top</option>
-                                      </select>
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="title">Tooltip</label>
-                                      <input type="text" name="title" class="form-control item-menu" id="title" placeholder="Tooltip">
-                                  </div>
-                              </form>
-                              </div>
-                              <div class="card-footer">
-                              <button type="button" id="btnUpdate" class="btn btn-primary" disabled><i class="fas fa-sync-alt"></i> Update</button>
-                              <button type="button" id="btnAdd" class="btn btn-success"><i class="fas fa-plus"></i> Add</button>
-                              </div>
-                              </div>
-
-                          </div>
-
-                    </div>
-
-                  <!-- end menu row -->
-              </div> <!-- / col-md-9 -->
+                      </div>
+                </form>
+              </div> <!-- / col-md-8 -->
 
               <?php 
               }

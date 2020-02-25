@@ -53,6 +53,20 @@
 
 <script src="<?php echo ADMIN_URL_FILE; ?>js/jquery.multiselect.js"></script>
 
+<?php 
+#######################  Start Jquery Menu Editor  ########################################
+?>
+
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="http://localhost/menu/jquery-menu-editor.min.js"></script>
+<script type="text/javascript" src="http://localhost/menu/bootstrap-iconpicker/js/iconset/fontawesome5-3-1.min.js"></script>
+<script type="text/javascript" src="http://localhost/menu/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js"></script> 
+
+<?php 
+#######################  End Jquery Menu Editor  ########################################
+?>
+
+
 <script>
 $(document).ready(function(){
   if($('#description').length){
@@ -119,7 +133,7 @@ $('.switchLang').on('change', function (e) {
 });
 
 <?php 
-  if($this->post_type == "menu" && (($this->method == "create") || ($this->method == "create")))
+  if($this->post_type == "menu" && (in_array($this->method,["create","edit"])))
   {
 ?>
     $(".multi_select_option").multiselect({
@@ -132,5 +146,51 @@ $('.switchLang').on('change', function (e) {
   }
 ?>
 </script>
+
+
+
+
+<script>
+          jQuery(document).ready(function(){
+
+              var arrayjson = '<?php echo json_encode($menu_data);?>';
+              // icon picker options
+              var iconPickerOptions = {searchText: "Buscar...", labelHeader: "{0}/{1}"};
+              // sortable list options
+              var sortableListOptions = {
+                  placeholderCss: {'background-color': "#cccccc"}
+              };
+
+              var editor = new MenuEditor('myEditor', {listOptions: sortableListOptions, iconPicker: iconPickerOptions});
+              editor.setForm($('#frmEdit'));
+              editor.setUpdateButton($('#btnUpdate'));
+              editor.setData(arrayjson);
+             
+
+              $('#btnOutput').on('click', function (event) {
+                  var str = editor.getString();
+                  $("#out").text(str);
+                  event.preventDefault();
+                  $("#menu_form_data").submit();
+              });
+
+              $("#btnUpdate").click(function(){
+                  editor.update();
+              });
+
+              $('#btnAdd').click(function(){
+                  editor.add();
+              });
+              /* ====================================== */
+
+              /** PAGE ELEMENTS **/
+              // $('[data-toggle="tooltip"]').tooltip();
+              // $.getJSON( "https://api.github.com/repos/davicotico/jQuery-Menu-Editor", function( data ) {
+              //     $('#btnStars').html(data.stargazers_count);
+              //     $('#btnForks').html(data.forks_count);
+              // });
+          });
+</script>
+
 </body>
 </html>

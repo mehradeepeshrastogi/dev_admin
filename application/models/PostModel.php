@@ -198,6 +198,39 @@ Class PostModel extends DR_Model {
         return $resultArr;
     }
 
+    
+    public function getPostData($lang_id){
+        $category_data = [];
+        $page_data = [];
+        $post_data = [];
+        $resultData = [];
+        $categoryData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $lang_id,"p.active" => "1","p.post_type" => "2"])->get();
+        $pageData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $lang_id,"p.active" => "1","p.post_type" => "3"])->get();
+
+        $postData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $lang_id,"p.active" => "1","p.post_type" => "1"])->get();
+
+        if($categoryData->num_rows() > 0){
+            $category_data = $categoryData->result_array();
+        }
+
+        if($pageData->num_rows() > 0){
+            $page_data = $pageData->result_array();
+        }
+        if($postData->num_rows() > 0){
+            $post_data = $postData->result_array();
+        }
+
+        $resultData = ["category_data" => $category_data, "page_data" => $page_data, "post_data" => $post_data];
+
+        return $resultData;
+    }
+
+    public function getPostMenu($post_ids,$lang_id){
+        $result = $this->db->select("p.post_id,pl.name as text,'_top' as target,pl.name as title,IF(pl.slug != '',concat('".base_url()."',pl.slug),'') as href")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $lang_id,"p.active" => "1"])->where_in("p.post_id",$post_ids)->get()->result_array();
+        return $result;
+
+    }
+
 
 }
     

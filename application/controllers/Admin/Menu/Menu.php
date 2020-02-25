@@ -18,42 +18,16 @@ class Menu extends Admin {
 		}else if (!empty($this->session->flashdata('success'))) {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
-
-		$config = [];
 		$search = "";
 		if(!empty($_GET['search'])){
 			$search = $_GET['search'];
 		}
 		$this->data['title'] = trans('categories');
 		$this->data['form_action'] = base_url('admin/menu');
-		$this->data['add_user'] = base_url('admin/menu/create');
+		$this->data['add_menu'] = base_url('admin/menu/create');
 		$this->data['search'] = $search;
-		$config["base_url"] = base_url() . "admin/menu";
-		$total_row = $this->UserModel->count($search);
-		$config["total_rows"] = $total_row;
-		$config["per_page"] = 30;
-		$config['use_page_numbers'] = TRUE;
-		$config['num_links'] = $total_row;
-		$config['cur_tag_open'] = '&nbsp;<a class="current">';
-		$config['cur_tag_close'] = '</a>';
-		$config['next_link'] = trans('next');
-		$config['prev_link'] = trans('previous');
-		if(!empty($search)){
-			$config['suffix'] = "?search=$search";
-		}
-		
-		$this->pagination->initialize($config);
-		if($this->uri->segment(3)){
-			$page = ($this->uri->segment(3)) ;
-		}
-		else{
-			$page = 0;
-		}
-		$this->data["results"] = $this->UserModel->getUsers($config["per_page"], $page,$search);
-		$str_links = $this->pagination->create_links();
-	
-		$this->data["links"] = explode('&nbsp;',$str_links);
-		$this->template('admin/user/index',$this->data);
+		$this->data["results"] = $this->MenuModel->getMenus($this->lang_id,$search);
+		$this->template('admin/menu/index',$this->data);
 
     }  // end index function
     
@@ -64,26 +38,9 @@ class Menu extends Admin {
 	*/
 	public function create()
 	{
-		$category_data = [];
-		$page_data = [];
-		$post_data = [];
-
-		$categoryData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "2"])->get();
-		$pageData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "3"])->get();
-
-		$postData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1","p.post_type" => "1"])->get();
-
-		if($categoryData->num_rows() > 0){
-			$category_data = $categoryData->result_array();
-		}
-
-		if($pageData->num_rows() > 0){
-			$page_data = $pageData->result_array();
-		}
-		if($postData->num_rows() > 0){
-			$post_data = $postData->result_array();
-		}
-
+		$form_post_data = [];
+		$menuData = [];
+		$postData = $this->PostModel->getPostData($this->lang_id);
 		if(!empty($_POST)){
 			
 			$this->form_validation->set_rules('name',"Name", "trim|required");
@@ -92,11 +49,9 @@ class Menu extends Admin {
 			if($this->form_validation->run() == FALSE){
 				$this->session->set_flashdata('error', validation_errors());
 			}else{
-				$postData = $_POST;
-				$post_ids = $postData["post_ids"];
-				$menuData = $this->db->select("p.post_id,pl.name")->from("post as p")->join("post_lang as pl","pl.post_id = p.post_id","left")->where(["pl.lang_id" => $this->lang_id,"p.active" => "1"])->where_in("p.post_id",$post_ids)->get()->result_array();
-				$this->data["menu_data"] = $menuData;
-				$this->data['menu_form_action'] = base_url("admin/menu/createMenu");
+				$form_post_data = $_POST;
+				$post_ids = $form_post_data["post_ids"];
+				$menuData = $this->PostModel->getPostMenu($post_ids,$this->lang_id);
 			}
 		}
 
@@ -106,105 +61,42 @@ class Menu extends Admin {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
 		
-
 		$this->data['title'] = trans('add_menu');
 		$this->data['image_range'] = "4";
 		$this->data['form_action'] = base_url("admin/menu/create");
+		$this->data['menu_form_action'] = base_url("admin/menu/createMenu");
 		$this->data['back_action'] = base_url("admin/menu");
-		$this->data['category_data'] = $category_data; 
-		$this->data['page_data'] = $page_data;
-		$this->data['post_data'] = $post_data;
+		$this->data['category_data'] = $postData["category_data"]; 
+		$this->data['page_data'] = $postData["page_data"];
+		$this->data['post_data'] = $postData["post_data"];
+		$this->data["menu_data"] = $menuData;
+		$this->data['form_post_data'] = $form_post_data;
 		$this->template('admin/menu/create',$this->data);
     }
 
-    public function createMenu(){
-    	dd($_POST);
-    }
-    
-
-
-	/* 
-		save data to database
-		@post method 
-	*/
-	public function store()
-	{
-		$this->form_validation->set_rules('name',"Name", "trim|required");
-		$this->form_validation->set_rules('email',"Email", "trim|required|is_unique[users.email]");
-		$this->form_validation->set_rules('user_name',"User name", "trim|required|is_unique[users.user_name]");
-		$this->form_validation->set_rules('phone',"Phone", "trim|required|is_unique[users.phone]");
-		$this->form_validation->set_rules('password',"Password", "trim|required");
-		$this->form_validation->set_rules('active',"User status", "trim|required");
-
-		if($this->form_validation->run() == FALSE){
-			$this->session->set_flashdata('error', validation_errors());
-			$this->create();
-		}else{
-			$postData = $_POST;
-
-			//////////////////// Insert data in user table /////////////////////////
-		
-			$user = [
-				'name' => $postData['name'],
-				'email' => $postData['email'],
-				'user_name' => $postData['user_name'],
-				'phone' => $postData['phone'],
-				'password' => md5($postData['password']),
-				'active' => $postData['active'],
-				'access_token' => create_token(),
-				'created_at' => $this->current_datetime,
-				'updated_at' => $this->current_datetime
-			];
-
-		##########################  upload user profile image #################################	
-			
-			if(!empty($_FILES['image']['name'])){
-				// File upload configuration
-				$_FILES['image']['name']     = time().$_FILES['image']['name'];
-				$config['upload_path']          = './uploads/user/';
-                $config['allowed_types']        = 'jpg|jpeg|png|gif';
-                $config['max_size']             = 1000;
-                // $config['max_width']            = 1024;
-                // $config['max_height']           = 768;
-				
-				// Load and initialize upload library
-				$this->load->library('upload', $config);
-
-				$this->upload->initialize($config);
-				
-				// Upload file to server
-				
-				if ( ! $this->upload->do_upload('image'))
-                {
-                        $error = $this->upload->display_errors();
-						dd($error);
-                }
-                else
-                {
-                      $user['profile_image'] = $_FILES['image']['name'];
-                }
-				
-				// end if do_upload
-				
-			}
-
-		##########################  end upload user profile image ################################
-
-			$this->db->insert('users',$user);
-			$user_id = $this->db->insert_id();
-
-			//////////////////// end Insert data in user table /////////////////////////
-			
-
-			if(!empty($user_id)){
-				$this->session->set_flashdata('success', trans('user_created'));
-                redirect($_SERVER['HTTP_REFERER']);	
-			}else{
-				$this->session->set_flashdata('error', trans('something_wrong'));
-				redirect($_SERVER['HTTP_REFERER']);
-			}
-		}
-		
+    public function createMenu($menu_id = null){
+    	extract($_POST);
+    	if(!empty($menu_id)){
+    		$menu_title = 'menu_updated';
+    		$menuData = ["active" => "1","updated_at" => $this->current_datetime];
+    		$this->db->where(["menu_id" => $menu_id])->update("menu",$menuData);
+    	}else{
+    		$menu_title = 'menu_created';
+    		$menuData = ["active" => "1","created_at" => $this->current_datetime,"updated_at" => $this->current_datetime];
+    		$this->db->insert("menu",$menuData);
+    		$menu_id = $this->db->insert_id();
+    	}
+   
+    	$menuLangData = [
+    			"menu_id" => $menu_id,
+    			"lang_id" => $lang_id,
+    			"name" => $name,
+    			"menu_description" => $menu_description
+    	];
+    	$this->db->where(["menu_id" => $menu_id,"lang_id" => $lang_id])->delete("menu_lang");
+    	$this->db->insert("menu_lang",$menuLangData);
+    	$this->session->set_flashdata('success', trans($menu_title));
+        redirect(base_url('admin/menu'));	
     }
     
     /* 
@@ -227,103 +119,67 @@ class Menu extends Admin {
 		@get method
 	*/
 
+
 	public function edit($id)
 	{
+		$form_post_data = [];
+		$post_ids = [];
+		$menuData = [];
+		$postData = $this->PostModel->getPostData($this->lang_id);
+		$menu = $this->MenuModel->getMenu($id,$this->lang_id);
+		if(!empty($menu)){
+			$menuArr = json_decode($menu->menu_description,true);
+			$post_ids = array_multi_column($menuArr,"post_id","children");
+			################ start menu data for menu json  ########################################
+			$menuData = json_decode($menu->menu_description);
+			################ end menu data for menu json  ########################################
+		}
+		if(!empty($_POST)){
+			
+			$this->form_validation->set_rules('name',"Name", "trim|required");
+			$this->form_validation->set_rules('post_ids[]',"Post Ids", "trim|required");
+
+			if($this->form_validation->run() == FALSE){
+				$this->session->set_flashdata('error', validation_errors());
+			}else{
+				$form_post_data = $_POST;
+				$post_ids = $form_post_data["post_ids"];
+				############# start menu data for menu json using function #######################
+				$menuData = $this->PostModel->getPostMenu($post_ids,$this->lang_id);
+				############## end menu data for menu json using function #######################
+			}
+		}
+
 		if (!empty($this->session->flashdata('error'))) {
 			$this->data['error'] = $this->session->flashdata('error');
 		}else if (!empty($this->session->flashdata('success'))) {
 			$this->data['success'] = $this->session->flashdata('success');
 		}
-
-		$this->data['title'] = trans('user_edit');
+		
+		$this->data['title'] = trans('edit_menu');
 		$this->data['image_range'] = "4";
-		$this->data['form_action'] = base_url("admin/user/update/".$id);
-		$this->data['back_action'] = base_url("admin/user");
-		$user = $this->UserModel->getuser($id);
-		$this->data['user'] = $user;
-		$this->template('admin/user/edit',$this->data);
+		$this->data['form_action'] = base_url("admin/menu/edit/".$id);
+		$this->data['menu_form_action'] = base_url("admin/menu/createMenu/".$id);
+		$this->data['back_action'] = base_url("admin/menu");
+		$this->data['category_data'] = $postData["category_data"]; 
+		$this->data['page_data'] = $postData["page_data"];
+		$this->data['post_data'] = $postData["post_data"];
+		$this->data['form_post_data'] = $form_post_data;
+		$this->data['menu'] = $menu;
+		$this->data['post_ids'] = $post_ids;
+		$this->data["menu_data"] = $menuData;
+		$this->template('admin/menu/edit',$this->data);
 
-	}
-
-
-
-	/* 
-		update data using id
-		@post method
-	*/
-	
-	public function update($user_id)
-	{
-		$postData = $_POST;
-		$user = [
-			'name' => $postData['name'],
-			'email' => $postData['email'],
-			'user_name' => $postData['user_name'],
-			'phone' => $postData['phone'],
-			'active' => $postData['active'],
-			'updated_at' => $this->current_datetime
-		];
-
-		##########################  upload user profile image #################################	
-		
-		if(!empty($_FILES['image']['name'])){
-			// File upload configuration
-			$_FILES['image']['name']     = time().$_FILES['image']['name'];
-			$config['upload_path']          = './uploads/user/';
-			$config['allowed_types']        = 'jpg|jpeg|png|gif';
-			$config['max_size']             = 1000;
-			// $config['max_width']            = 1024;
-			// $config['max_height']           = 768;
-			
-			// Load and initialize upload library
-			$this->load->library('upload', $config);
-
-			$this->upload->initialize($config);
-			
-			// Upload file to server
-			
-			if ( ! $this->upload->do_upload('image'))
-			{
-				$error = $this->upload->display_errors();
-				dd($error);
-			}
-			else
-			{
-				$filePath = FCPATH."uploads/user/";
-				$table = "users";
-				$select = "profile_image";
-				$where = ["user_id" => $user_id];
-				unlinkFile($filePath,$table,$select,$where);
-
-				$user['profile_image'] = $_FILES['image']['name'];
-			}
-			
-			// end if do_upload
-			
-		}
-
-	##########################  end upload user profile image ################################
-
-		if(!empty($postData['password'])){
-			$user['password'] = md5($postData['password']);
-		}
-		$this->db->where('user_id',$user_id)->update('users',$user);
-		$this->session->set_flashdata('success', trans('user_updated'));
-        redirect($_SERVER['HTTP_REFERER']);	
-		
 	}
 
 	public function updateStatus(){
-		$user_id = $_POST['id'];
+		$menu_id = $_POST['id'];
 		unset($_POST['id']);
-		$msg = ($_POST['active'] == 1)?'user_activated':'user_deactivated';
-		$this->db->where(["user_id" => $user_id])->update("users",$_POST);
+		$msg = ($_POST['active'] == 1)?'menu_activated':'menu_deactivated';
+		$this->db->where(["menu_id" => $menu_id])->update("menu",$_POST);
 		$this->session->set_flashdata('success', trans($msg));
         redirect($_SERVER['HTTP_REFERER']);	
 	}
-
-
-
 
 	/* 
 		delete data using id
@@ -332,14 +188,9 @@ class Menu extends Admin {
 	
 	public function destroy()
 	{
-		$user_id = $this->input->post('id');
-		// $filePath = FCPATH."uploads/user/";
-		// $table = "users";
-		// $select = "image";
-		// $where = ["user_id" => $user_id];
-		// unlinkFile($filePath,$table,$select,$where);
-		$this->db->where(["user_id" => $user_id])->delete(["user_app_tokens","users"]);
-		$this->session->set_flashdata('success', trans('user_deleted'));
+		$menu_id = $this->input->post('id');
+		$this->db->where(["menu_id" => $menu_id])->delete(["menu_lang","menu"]);
+		$this->session->set_flashdata('success', trans('menu_deleted'));
         redirect($_SERVER['HTTP_REFERER']);	
 	}
 
