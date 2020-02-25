@@ -132,24 +132,20 @@ $('.switchLang').on('change', function (e) {
     }
 });
 
+</script>
+
 <?php 
   if($this->post_type == "menu" && (in_array($this->method,["create","edit"])))
   {
 ?>
+<script>
     $(".multi_select_option").multiselect({
         columns: 1,
         // placeholder: 'Select Recruiters',
         search: true,
         selectAll: true
     });
-
-</script>
-
-
-
-
-<script>
-          jQuery(document).ready(function(){
+    jQuery(document).ready(function(){
 
               var arrayjson = '<?php echo json_encode($menu_data);?>';
               // icon picker options
