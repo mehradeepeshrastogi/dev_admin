@@ -8,7 +8,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="<?php echo empty($uri)?'active':''; ?>">
           <a href="<?php echo base_url($this->controllerName); ?>">
-            <i class="fa fa-dashboard"></i> <span><?php echo trans('dashboard');?></span>
+            <i class="fas fa-tachometer-alt-slow"></i> <span><?php echo trans('dashboard');?></span>
            </a>
         </li>
 <?php 

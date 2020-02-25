@@ -57,10 +57,10 @@
 #######################  Start Jquery Menu Editor  ########################################
 ?>
 
-<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="http://localhost/menu/jquery-menu-editor.min.js"></script>
-<script type="text/javascript" src="http://localhost/menu/bootstrap-iconpicker/js/iconset/fontawesome5-3-1.min.js"></script>
-<script type="text/javascript" src="http://localhost/menu/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js"></script> 
+<script type="text/javascript" src="<?php echo ADMIN_URL_FILE; ?>js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_URL_FILE; ?>js/jquery-menu-editor.min.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_URL_FILE; ?>bootstrap-iconpicker/js/iconset/fontawesome5-3-1.min.js"></script>
+<script type="text/javascript" src="<?php echo ADMIN_URL_FILE; ?>bootstrap-iconpicker/js/bootstrap-iconpicker.min.js"></script> 
 
 <?php 
 #######################  End Jquery Menu Editor  ########################################
@@ -142,9 +142,7 @@ $('.switchLang').on('change', function (e) {
         search: true,
         selectAll: true
     });
-<?php 
-  }
-?>
+
 </script>
 
 
@@ -191,6 +189,10 @@ $('.switchLang').on('change', function (e) {
               // });
           });
 </script>
+
+<?php 
+  }
+?>
 
 </body>
 </html>
