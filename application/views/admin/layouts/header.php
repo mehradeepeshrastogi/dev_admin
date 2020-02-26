@@ -14,7 +14,7 @@
   <?php /*
   <link rel="stylesheet" href="<?php echo ADMIN_URL_FILE; ?>bower_components/font-awesome/css/font-awesome.min.css">
   */ ?>
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"/>
   <!-- Ionicons -->
   <link rel="stylesheet" href="<?php echo ADMIN_URL_FILE; ?>bower_components/Ionicons/css/ionicons.min.css">
   

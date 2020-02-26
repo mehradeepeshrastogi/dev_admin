@@ -86,7 +86,16 @@
                           </div>
                       </div>
 
-                      <div class="col-md-12">
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label for="<?php echo trans('language');?>"><?php echo trans('language');?></label>
+                          <?php foreach($languages as $language): ?>
+                            <input type="text" class="form-control" value="<?php echo trans($language->name);?>" readonly >
+                          <?php endforeach; ?>
+                        </div>
+                      </div>
+
+                      <div class="col-md-10">
                           <div class="form-group">
                               <label for="<?php echo trans('slug');?>"><?php echo trans('slug');?>:</label>
                                <?php foreach($languages as $k=>$language): ?>

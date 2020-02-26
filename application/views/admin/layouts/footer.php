@@ -107,7 +107,7 @@ $(document).ready(function(){
     
     <?php 
     /*  start image preview code  */
-    $imageFileArray = ["category.create","category.store"];
+    $imageFileArray = ["post.create","post.edit","page.create","page.edit"];
     if(in_array($this->uri->segment(2).'.'.$this->uri->segment(3),$imageFileArray)){
     for($i=1;$i<=$image_range;$i++){ ?>
 

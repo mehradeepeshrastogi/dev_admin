@@ -104,6 +104,7 @@ class Post extends Admin {
 		$this->data['title'] = trans('add_'.$this->post_type);
 		$this->data['form_action'] = base_url("admin/".$this->post_type."/create");
 		$this->data['back_action'] = base_url("admin/".$this->post_type);
+		$this->data['image_range'] = "4";
 		$this->template('admin/post/create',$this->data);
     }
     
