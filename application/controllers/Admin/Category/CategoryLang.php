@@ -210,8 +210,10 @@ class CategoryLang extends Admin {
 	
 		
 		if(!empty($_FILES['image']['name'])){
-			$file_name = "MAIN.jpg";
-			$categoryArr = str_split($id_category);
+			$filename = $_FILES['image']['name'];
+			$ext = pathinfo($filename,PATHINFO_EXTENSION);
+			$file_name = 'main.'.$ext;
+			$categoryArr = str_split($id_post);
 			$folder = implode('/',$categoryArr);
 			$upload_path = CATEGORY_IMAGE_PATH.$folder;
 			
@@ -235,7 +237,7 @@ class CategoryLang extends Admin {
 				}else{
 					$catImgArr = [
 						'name' => $_FILES['image']['name'],
-						'id_category' => $id_category,
+						'id_post' => $id_post,
 					];
 					$this->db->insert('category_image',$catImgArr);
 					$id_image = $this->db->insert_id();

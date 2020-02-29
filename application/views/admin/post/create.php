@@ -12,7 +12,7 @@
     <section class="content">
       
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-9">
             <?php
             if(!empty($error)){
               echo "<div class=' alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>".$error."</div>";
@@ -23,7 +23,7 @@
         </div>
 
         <!-- left column -->
-        <div class="col-md-12">
+        <div class="col-md-9">
           <!-- general form elements -->
           <div class="box box-primary">
 
@@ -277,11 +277,36 @@
           <!-- /.box -->
         </div>
         <!--/.col (right) -->
+
+         <!-- left column -->
+        <div class="col-md-3">
+          <!-- general form elements -->
+          <div class="box box-primary">
+
+              <div class="box-header with-border">
+                 
+              </div>
+            <!-- /.box-header -->
+
+              <div class="box-body">
+                <!-- start tab content-->
+                  <h3>Featured Image</h3>
+                  <button type="button" class="btn btn-success" id="post_image_btn"  v-on:click="getPostImages();">Set Featured image</button>
+
+              </div>  <!-- end tab-content-->  
+              <!-- /.box-body -->
+
+          </div>
+          <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
       
       </div>
       <!-- /.row -->
     </section>
     <!-- /.content -->
-    
+     
+     <?php require_once APPPATH."views/admin/modal/admin_popup_modal.php"; ?>
+
   </div>
   <!-- /.content-wrapper -->

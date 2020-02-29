@@ -69,8 +69,6 @@ class Post extends Admin {
 	*/
 	public function create()
 	{
-		
-
 		if(!empty($_POST)){
 			$this->form_validation->set_rules('name[]',"Name", "trim|required");
 			$this->form_validation->set_rules('description[]',"Description", "trim|required");
@@ -86,6 +84,9 @@ class Post extends Admin {
 				$postData["languages"] = $this->data['languages'];
 				$post_id = $this->PostModel->createPost($postData);
 				if(!empty($post_id)){
+					if(!empty($_FILES['image']['name'][0])){
+						$this->postFiles($_FILES,$post_id);
+					}
 					$this->session->set_flashdata('success', trans($this->post_type.'_created'));
 		            redirect($_SERVER['HTTP_REFERER']);	
 				}else{
@@ -107,7 +108,72 @@ class Post extends Admin {
 		$this->data['image_range'] = "4";
 		$this->template('admin/post/create',$this->data);
     }
+
+/*
+    public function postFiles($postFiles,$post_id){
+		if(!empty($postFiles['image']['name'][0])){
+			$k=0;
+			foreach($postFiles['image']['name'] as $image){
+				
+			}
+			
+
+			$filename = $postFiles['image']['name'];
+			$ext = pathinfo($filename,PATHINFO_EXTENSION);
+			$file_name = 'main.'.$ext;
+			$postArr = str_split($post_id);
+			$folder = implode('/',$postArr);
+			$upload_path = CATEGORY_IMAGE_PATH.$folder;
+			
+			if (!file_exists($upload_path)) {
+				mkdir($upload_path, 0777, true);
+			}
+
+			$upload_conf = array(
+				'file_name'  =>   $file_name,
+				'upload_path'   => realpath($upload_path),
+				'allowed_types' => 'gif|jpg|jpeg|png',
+				'max_size'      => '300000',
+				);
+				 
+				$this->load->library('upload');
+				$this->upload->initialize( $upload_conf );
+				$field_name = 'image';
+				 
+				if ( !$this->upload->do_upload('image','')){
+					$error['upload']= $this->upload->display_errors();				
+				}else{
+					$postImgArr = [
+						'name' => $postFiles['image']['name'],
+						'image_name' => $postFiles['image_name'],
+						'cover' => $cover,
+						'post_id' => $post_id,
+					];	
+					$this->db->insert('post_image',$postImgArr);
+					$id_image = $this->db->insert_id();
+
+					$upload_data = $this->upload->data();
+					$category_imageArr = $this->config->item('IMAGE_SIZE_ARRAY');
+					foreach($category_imageArr as $image){
+						$resize_conf = array(
+							'upload_path'  => realpath($upload_path),
+							'source_image' => $upload_data['full_path'], 
+							'new_image'    => $upload_data['file_path'].$image['prefix'].$id_image.$image['type'],
+							'width'        => $image['width'],
+							'height'       => $image['height']
+						);
+						$this->load->library('image_lib'); 
+						$this->image_lib->initialize($resize_conf);
+						$this->image_lib->resize();
+					} // end foreach image array
+
+				} // end else file successfully uploading
+
+		} // end file exist
+
+	} // end function
     
+*/
 
 
     
@@ -196,6 +262,23 @@ class Post extends Admin {
 		$this->db->where(["post_id" => $post_id])->delete(["post_lang","post"]);
 		$this->session->set_flashdata('success', trans($this->post_type.'_deleted'));
         redirect($_SERVER['HTTP_REFERER']);	
+	}
+
+	public function getPostImages(){
+		$this->load->helper('directory'); //load directory helper
+		$dir = "uploads/post/"; // Your Path to folder
+		$postImages = array_map('postImageUrl',directory_map($dir));
+		echo json_encode($postImages); die;
+		/*
+		foreach ($postImages as $image)
+		{
+		?>
+		     <img src="<?php echo base_url($dir)."/".$image;?>" alt="" style="width:100px;height:100px;padding: 5px;box-shadow: 5px 7px 4px #8a8888;">
+		   
+		<?php 
+		}
+		*/
+		      
 	}
 
 

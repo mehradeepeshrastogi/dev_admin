@@ -202,61 +202,7 @@ class Category extends Admin {
 	}
 
 
-	public function postCategoryData($post,$id=null){
-
 	
-		
-		if(!empty($_FILES['image']['name'])){
-			$file_name = "MAIN.jpg";
-			$categoryArr = str_split($id_category);
-			$folder = implode('/',$categoryArr);
-			$upload_path = CATEGORY_IMAGE_PATH.$folder;
-			
-			if (!file_exists($upload_path)) {
-				mkdir($upload_path, 0777, true);
-			}
-
-			$upload_conf = array(
-				'file_name'  =>   $file_name,
-				'upload_path'   => realpath($upload_path),
-				'allowed_types' => 'gif|jpg|jpeg|png',
-				'max_size'      => '300000',
-				);
-				 
-				$this->load->library('upload');
-				$this->upload->initialize( $upload_conf );
-				$field_name = 'image';
-				 
-				if ( !$this->upload->do_upload('image','')){
-					$error['upload']= $this->upload->display_errors();				
-				}else{
-					$catImgArr = [
-						'name' => $_FILES['image']['name'],
-						'id_category' => $id_category,
-					];
-					$this->db->insert('category_image',$catImgArr);
-					$id_image = $this->db->insert_id();
-
-					$upload_data = $this->upload->data();
-					$category_imageArr = CATEGORY_IMAGE_ARRAY;
-					foreach($category_imageArr as $image){
-						$resize_conf = array(
-							'upload_path'  => realpath($upload_path),
-							'source_image' => $upload_data['full_path'], 
-							'new_image'    => $upload_data['file_path'].$image['prefix'].$id_image.$image['type'],
-							'width'        => $image['width'],
-							'height'       => $image['height']
-						);
-						$this->load->library('image_lib'); 
-						$this->image_lib->initialize($resize_conf);
-						$this->image_lib->resize();
-					} // end foreach image array
-
-				} // end else file successfully uploading
-
-		} // end file exist
-
-	} // end function
 
 	public function manageLanguage(){
 		$string = APPPATH.'language/english/admin_lang.php';

@@ -160,3 +160,11 @@ if (!function_exists('array_multi_column'))
 		return $post_ids_arr;
 	}
 }
+
+
+if (!function_exists('postImageUrl'))
+{
+	function postImageUrl($arrayData){
+		return (base_url().'uploads/post/'.$arrayData);
+	}
+}

@@ -45,6 +45,40 @@ INSERT INTO `iq_language` (`lang_id`, `name`, `short_order`, `active`, `created_
 (1,	'english',	'1',	'1',	'2019-08-03 12:23:35',	'2019-08-03 12:23:35'),
 (2,	'german',	'2',	'1',	'2019-08-03 12:25:33',	'2019-08-03 12:25:33');
 
+DROP TABLE IF EXISTS `iq_menu`;
+CREATE TABLE `iq_menu` (
+  `menu_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `active` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '0 = disable,1 = enable',
+  `menu_type` enum('1','2','3') COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '1 = menu, 2 = category 3 = page ',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `iq_menu` (`menu_id`, `active`, `menu_type`, `created_at`, `updated_at`) VALUES
+(2,	'1',	'1',	'2020-02-25 09:23:37',	'2020-02-25 12:26:21'),
+(3,	'1',	'1',	'2020-02-25 09:24:03',	'2020-02-25 12:24:03');
+
+DROP TABLE IF EXISTS `iq_menu_lang`;
+CREATE TABLE `iq_menu_lang` (
+  `menu_lang_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `menu_id` bigint(20) unsigned NOT NULL,
+  `lang_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(200) CHARACTER SET utf8 NOT NULL,
+  `menu_description` text CHARACTER SET utf8 NOT NULL,
+  PRIMARY KEY (`menu_lang_id`),
+  KEY `menu_id` (`menu_id`),
+  KEY `lang_id` (`lang_id`),
+  CONSTRAINT `iq_menu_lang_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `iq_menu` (`menu_id`),
+  CONSTRAINT `iq_menu_lang_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `iq_language` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `iq_menu_lang` (`menu_lang_id`, `menu_id`, `lang_id`, `name`, `menu_description`) VALUES
+(5,	3,	1,	'footer_menu',	'[{\"text\":\"fadfasdf\",\"href\":\"http://localhost/dev_admin/sdfsad\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fadfasdf\",\"post_id\":\"1\"},{\"text\":\"sadfsda\",\"href\":\"http://localhost/dev_admin/d\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"sadfsda\",\"post_id\":\"2\"}]'),
+(19,	2,	1,	'header_menu',	'[{\"text\":\"fadfasdf\",\"href\":\"http://localhost/dev_admin/sdfsad\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fadfasdf\",\"post_id\":\"1\"},{\"text\":\"sadfsda\",\"href\":\"http://localhost/dev_admin/d\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"sadfsda\",\"post_id\":\"2\"},{\"text\":\"fasdf\",\"href\":\"http://localhost/dev_admin/sdfasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fasdf\",\"post_id\":\"4\",\"children\":[{\"text\":\"afdsfds\",\"href\":\"http://localhost/dev_admin/sdfsda\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"afdsfds\",\"post_id\":\"5\"}]},{\"text\":\"afasdf\",\"href\":\"http://localhost/dev_admin/sdfasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"afasdf\",\"post_id\":\"6\"}]'),
+(23,	3,	2,	'german_footer_menu',	'[{\"text\":\"fdsafsdaf\",\"href\":\"http://localhost/dev_admin/dfsadfasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fdsafsdaf\",\"post_id\":\"1\",\"children\":[{\"text\":\"afdsafsdafsdf\",\"href\":\"http://localhost/dev_admin/f\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"afdsafsdafsdf\",\"post_id\":\"2\"},{\"text\":\"dsfsadfsd\",\"href\":\"http://localhost/dev_admin/sdfsdafasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"dsfsadfsd\",\"post_id\":\"5\"}]},{\"text\":\"sdfdsafsd\",\"href\":\"http://localhost/dev_admin/sdafsadf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"sdfdsafsd\",\"post_id\":\"4\"},{\"text\":\"fsdf\",\"href\":\"http://localhost/dev_admin/sdfsad\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fsdf\",\"post_id\":\"6\"}]'),
+(24,	2,	2,	'german_header_menu',	'[{\"text\":\"fdsafsdaf\",\"href\":\"http://localhost/dev_admin/dfsadfasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fdsafsdaf\",\"post_id\":\"1\",\"children\":[{\"text\":\"afdsafsdafsdf\",\"href\":\"http://localhost/dev_admin/f\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"afdsafsdafsdf\",\"post_id\":\"2\"}]},{\"text\":\"sdfdsafsd\",\"href\":\"http://localhost/dev_admin/sdafsadf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"sdfdsafsd\",\"post_id\":\"4\"},{\"text\":\"fsdf\",\"href\":\"http://localhost/dev_admin/sdfsad\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"fsdf\",\"post_id\":\"6\",\"children\":[{\"text\":\"dsfsadfsd\",\"href\":\"http://localhost/dev_admin/sdfsdafasdf\",\"icon\":\"empty\",\"target\":\"_top\",\"title\":\"dsfsadfsd\",\"post_id\":\"5\"}]}]');
+
 DROP TABLE IF EXISTS `iq_post`;
 CREATE TABLE `iq_post` (
   `post_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -57,12 +91,11 @@ CREATE TABLE `iq_post` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `iq_post` (`post_id`, `short_order`, `active`, `post_type`, `created_at`, `updated_at`) VALUES
-(1,	'0',	'0',	'2',	'2020-02-17 09:14:03',	'2020-02-17 09:14:03'),
-(2,	'11',	'0',	'3',	'2020-02-17 09:21:19',	'2020-02-17 09:21:19'),
-(3,	'0',	'1',	'1',	'2020-02-17 12:10:29',	'2020-02-17 12:10:29'),
-(4,	'0',	'0',	'1',	'2020-02-17 12:10:56',	'2020-02-17 12:10:56'),
-(5,	'1',	'0',	'3',	'2020-02-17 12:11:29',	'2020-02-17 12:11:29'),
-(6,	'0',	'0',	'2',	'2020-02-17 12:11:52',	'2020-02-17 12:11:52');
+(1,	'0',	'1',	'2',	'2020-02-17 09:14:03',	'2020-02-17 09:14:03'),
+(2,	'11',	'1',	'3',	'2020-02-17 09:21:19',	'2020-02-17 09:21:19'),
+(4,	'0',	'1',	'1',	'2020-02-17 12:10:56',	'2020-02-17 12:10:56'),
+(5,	'1',	'1',	'3',	'2020-02-17 12:11:29',	'2020-02-17 12:11:29'),
+(6,	'0',	'1',	'2',	'2020-02-17 12:11:52',	'2020-02-17 12:11:52');
 
 DROP TABLE IF EXISTS `iq_post_image`;
 CREATE TABLE `iq_post_image` (
@@ -101,8 +134,6 @@ INSERT INTO `iq_post_lang` (`post_lang_id`, `post_id`, `lang_id`, `name`, `descr
 (2,	1,	2,	'fdsafsdaf',	'fsdfsdafsdf',	'',	'dfsadfasdf',	'',	'',	''),
 (3,	2,	1,	'sadfsda',	'',	'<p>ffgsadfdfdsfs</p>',	'd',	'',	'',	''),
 (4,	2,	2,	'afdsafsdafsdf',	'',	'<p>sdafsadfsdafsad</p>',	'f',	'',	'',	''),
-(5,	3,	1,	'sdfsdafasdfsadf',	'sdfsda',	'<p>sdfdsasdf</p>',	'sdafdsafasd',	'',	'',	''),
-(6,	3,	2,	'sdafadsfasdf',	'sdfsad',	'<p>dsfdsa</p>',	'sdfsdaf',	'',	'',	''),
 (7,	4,	1,	'fasdf',	'sdafadsf',	'<p>sdfasdfasd</p>',	'sdfasdf',	'',	'',	''),
 (8,	4,	2,	'sdfdsafsd',	'sdfasdsd',	'<p>sdfsdsad</p>',	'sdafsadf',	'',	'',	''),
 (9,	5,	1,	'afdsfds',	'sdfsadsd',	'<p>sdafasdfsad</p>',	'sdfsda',	'',	'',	''),
@@ -148,4 +179,4 @@ CREATE TABLE `iq_user_login_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2020-02-17 13:17:14
+-- 2020-02-25 12:37:43
