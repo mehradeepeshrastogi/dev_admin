@@ -9,7 +9,7 @@
         </div>
         <div class="modal-body">
           <div class="col-md-12">
-              <div class="col-md-9">
+              <div class="col-md-9" id="post_image_modal_popup">
                   <div class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
                       <label :for="col"><img v-bind:src="val" class="post_image" v-on:click="getPostImage(val);"/></label>
                   </div>
