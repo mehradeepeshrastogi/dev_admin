@@ -168,6 +168,7 @@ class Post extends Admin {
 		$this->data['back_action'] = base_url("admin/".$this->post_type);
 		$post = $this->PostModel->getPost($id);
 		$this->data['post'] = $post;
+		$this->data['image_range'] = "4";
 		$this->template('admin/post/edit',$this->data);
 
 	}
