@@ -8,26 +8,61 @@
           <h4 class="modal-title">Modal Header</h4>
         </div>
         <div class="modal-body">
+          <div class="col-md-2">
+              <div id="clbk" class="demo"></div>
+          </div>
+          <div class="col-md-10">
+
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#AllImages" data-toggle="tab"><?php echo trans('images');?></a></li>
+                    <li><a href="#uploadImages" data-toggle="tab"><?php echo trans('upload_images');?></a></li>
+                </ul>
+              </div>
+
           <div class="col-md-12">
-              <div class="col-md-9" id="post_image_modal_popup">
-                  <div class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
-                      <label :for="col"><img v-bind:src="val" class="post_image" v-on:click="getPostImage(val);"/></label>
-                  </div>
-              </div>
-              <div class="col-md-3">
-                  <form v-if="image!=''">
-                      <div class="form-group">
-                        <label :for="image_url">Image URL</label>
-                        <input type="text" class="form-control" v-model="image">
-                      </div>
-                      <button type="button" class="btn btn-danger" v-on:click="deletePostImage(image);">DELETE PERMANENT</button>
-                  </form>
-              </div>
-            </div>
-        </div>
+            <div class="box-body">
+                <!-- start tab content-->
+                  <div class="tab-content">
+                      <!-- start category tab section -->
+                      <div class="active tab-pane" id="AllImages" >
+
+                            <div class="col-md-9 post_image_modal_popup">
+                                <div class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
+                                    <label :for="col"><img v-bind:src="val" class="post_image" v-on:click="getPostImage(val);"/></label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <form v-if="image!=''">
+                                    <div class="form-group">
+                                      <label>Image URL</label>
+                                      <input type="text" class="form-control" v-model="image">
+                                    </div>
+                                    <button type="button" class="btn btn-danger" v-on:click="deletePostImage(image);">DELETE PERMANENT</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="uploadImages">
+                          <form v-on:submit.prevent="uploadImages"  method="POST" enctype="multipart/form-data">
+                           <div class="col-md-9 post_image_modal_popup">
+                             <div class="form-group">
+                                <label>Image URL</label>
+                                <input type="file" name="multiple_images" @change="onFileChange" multiple="">
+                              </div>
+                               <button type="submit" class="btn btn-info">UPLOAD</button>
+                            </div>
+                          </form>
+                        </div> 
+
+                    </div> <!-- tab-content -->
+              </div> <!-- end box body -->
+            </div> <!-- end col-md-12 -->
+        </div> <!-- end modal-body -->
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
+          </div> <!-- col-md-9-->
       </div>
       
     </div>

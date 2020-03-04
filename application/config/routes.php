@@ -88,7 +88,8 @@ $route['admin/page/update/(:num)'] = $route['admin/post/update/(:num)'] ='Admin/
 $route['admin/page/destroy'] = $route['admin/post/destroy'] ='Admin/Post/Post/destroy';
 $route['admin/page/updateStatus']  = $route['admin/post/updateStatus'] ='Admin/Post/Post/updateStatus';
 
-$route['admin/page/getPostImages']  = $route['admin/post/getPostImages'] ='Admin/Post/Post/getPostImages';
+$route['admin/getPostImages']  ='Admin/admin/getPostImages';
+$route['admin/uploadImages']  ='Admin/admin/uploadImages';
 
 
 // $route['admin/page']  = 'Admin/Page/Page';

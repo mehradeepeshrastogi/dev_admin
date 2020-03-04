@@ -78,7 +78,4 @@ class DR_Controller extends CI_Controller {
 			return "not";
 		}
 	}
-
-
-
 }

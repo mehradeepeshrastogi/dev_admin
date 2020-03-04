@@ -168,3 +168,124 @@ if (!function_exists('postImageUrl'))
 		return (base_url().'uploads/post/'.$arrayData);
 	}
 }
+
+
+
+if (!function_exists('get_post_image'))
+{
+	function get_post_image($flag=false){
+?>
+
+	<script type="text/javascript">
+
+
+		var flag = '<?php echo $flag;?>';
+	    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+	    axios.defaults.baseURL = window.location.protocol+"//"+window.location.hostname+'/'+window.location.pathname.split("/")[1]+'/';
+	    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+	    var app = new Vue({
+	      el: '.content-wrapper',
+	      data(){
+	        return {
+	          file:'',
+	          image:'',
+	          images:[],
+	          flag:flag,
+	          uploadImagesArr:[],
+	          post_form:{
+	          	"width":"800",
+	          	"height":"800",
+	          	"multiple_images":"",
+	          },
+	          headers:'',
+	          exception:['id_category','id_product','created_at','updated_at','category','Bestell_Menge']
+	        }
+	      },
+	      mounted: function(){
+	      	var self = this;
+	      	if(self.flag == '1'){
+	        	this.getPostImages();
+	      	}
+	      },
+	      methods:{
+	        getPostImages:function(){
+	          var self = this;
+	          // $('.loader').show();
+	          var data = new FormData();
+	          if($('.searchData').val() !=""){
+	            // data.append('searchData',$('.searchData').val());
+	          }
+	          
+	          // data.append('id_category',$('#id_category').val());
+	          // data.append('page',self.pagination.current_page);
+	          // data.append('per_page',self.pagination.per_page);
+	          // axios.post('admin/post/getPostImages',data)
+	          axios.get('admin/getPostImages').then(function (response) {
+	            self.images = response.data;
+	            console.log(self.images);
+	            $('#post_images').modal('show');
+	            // $('.loader').hide();
+	          }).catch(function (error) {
+	            console.log(error);
+	            // $('.loader').hide();
+	          });
+	        },
+	        getPostImage:function(image){
+	          var self = this;
+	          self.image = image;
+	          console.log(self.image);
+	        },
+	        uploadImages:function(event){
+	        	var self = this;
+                var formData = new FormData();
+                for ( var key in self.post_form) {
+                    formData.append(key, self.post_form[key]);
+                }
+                formData.append('image', self.uploadImagesArr);
+                const config = { 
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }
+
+                axios.post('admin/uploadImages',formData,config).then(function (response) {
+                    console.log(response);
+           			
+                })
+                .catch(function (error) {
+                    // self.formErrors = error.response.data.errors;
+                    console.log(error);
+                    // $('.loader').hide();
+                });
+	        },
+	        onFileChange:function(e){
+	        	var self = this;
+                var form_data = new FormData();
+                var file;
+				imageLength = e.target.files.length;
+				console.log(e.target.files);
+				for(i=0;i<imageLength;i++){
+					file = e.target.files[i];
+                	// formData = ('files['+i+']',e.target.files[i]);
+				    form_data.append('files[' + i + ']', file);
+	        	}
+				// console.log(file);
+	        	console.log(form_data);
+                this.uploadImagesArr = form_data;
+	        	// console.log(this.uploadImagesArr);
+                // if(this.image.size > 1000000){
+                //     $(".btnSubmit").attr("disabled",true);
+                //     // this.formErrors = {
+                //     //     "image":["Image Size grater the 1 MB"]
+                //     // }
+                // }else{
+                //     $(".btnSubmit").attr("disabled",false);
+                //      this.formErrors = {};
+                // }
+            }
+	       
+	      }
+	    });
+	</script>
+<?php
+	}
+}
+?>

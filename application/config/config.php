@@ -527,7 +527,23 @@ $config['IMAGE_SIZE_ARRAY'] = [
 	[
 		"width" => "80",
 		"height" => "80",
-	]
+		"path" => "thumb",
+	],
+	[
+		"width" => "160",
+		"height" => "160",
+		"path" => "small",
+	],
+	[
+		"width" => "320",
+		"height" => "320",
+		"path" => "medium",
+	],
+	[
+		"width" => "640",
+		"height" => "640",
+		"path" => "large",
+	],
 ];
 
 $config["pagination_config"] = array(

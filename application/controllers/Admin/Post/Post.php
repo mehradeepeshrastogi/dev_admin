@@ -262,31 +262,9 @@ class Post extends Admin {
 		$this->db->where(["post_id" => $post_id])->delete(["post_lang","post"]);
 		$this->session->set_flashdata('success', trans($this->post_type.'_deleted'));
         redirect($_SERVER['HTTP_REFERER']);	
-	}
+	}	
 
-	public function getPostImages(){
-		$this->load->helper('directory'); //load directory helper
-		$dir = "uploads/post/"; // Your Path to folder
-		$postImages = directory_map($dir);
-		if($this->input->is_ajax_request()){
-			$postImages = array_map('postImageUrl',$postImages);
-			echo json_encode($postImages); die;
-
-		}else{
-			/*
-			foreach ($postImages as $image)
-			{
-			?>
-			     <img src="<?php echo base_url($dir)."/".$image;?>" alt="" style="width:100px;height:100px;padding: 5px;box-shadow: 5px 7px 4px #8a8888;">
-			   
-			<?php 
-			}     */ 
-
-			$data["postImages"] = $postImages;
-			$this->load->view("admin/modal/admin_html_modal",$data);   
-		}
-		
-	}
+	
 
 
 }

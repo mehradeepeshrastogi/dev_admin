@@ -33,6 +33,7 @@
   */
   ?>
     <link rel="stylesheet" href="<?php echo ADMIN_URL_FILE; ?>css/style.css">
+    <link rel="stylesheet" href="<?php echo ADMIN_URL_FILE; ?>css/jstree.min.css">
     
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">

@@ -31,45 +31,6 @@
 <script src="<?php echo ADMIN_URL_FILE; ?>js/axios.min.js"></script>
 <script src="<?php echo ADMIN_URL_FILE; ?>js/vue.js"></script>
 
-<script type="text/javascript">
-
-    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    axios.defaults.baseURL = window.location.protocol+"//"+window.location.hostname+'/'+window.location.pathname.split("/")[1]+'/';
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    var app = new Vue({
-      el: '.content-wrapper',
-      data(){
-        return {
-          file:'',
-          image:'',
-          images:[],
-          selected_product:'',
-          headers:'',
-          exception:['id_category','id_product','created_at','updated_at','category','Bestell_Menge']
-        }
-      },
-      mounted: function(){
-        this.getPostImages();
-      },
-      methods:{
-        getPostImages:function(){
-          var self = this;
-          axios.get('admin/post/getPostImages').then(function (response) {
-            self.images = response.data;
-            console.log(self.images);
-            $('#post_images').modal('show');
-            // $('.loader').hide();
-          }).catch(function (error) {
-            console.log(error);
-            // $('.loader').hide();
-          });
-        },
-        getPostImage:function(image){
-          var self = this;
-          self.image = image;
-          console.log(self.image);
-        },
-       
-      }
-    });
-</script>
+<?php 
+  get_post_image(true);
+?>

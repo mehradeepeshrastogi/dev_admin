@@ -107,6 +107,131 @@ class Admin extends DR_Controller {
 		$this->session->sess_destroy();
 		redirect('admin','refresh');
 	}
+
+
+	 public function uploadImages(){
+	 	$post_data = $_POST;
+	 	dump($post_data);
+	 	dd($_FILES);
+      /////////////////////// upload category image data /////////////////////////////////
+        $size = [];
+        $filesCount = count($_FILES['image']['name']);
+        for($i = 0; $i < $filesCount; $i++){
+          $file_name = $_FILES['image']['name'][$i];
+          $_FILES['file']['name']     = time().$file_name;
+          $_FILES['file']['type']     = $_FILES['image']['type'][$i];
+          $_FILES['file']['tmp_name'] = $_FILES['image']['tmp_name'][$i];
+          $_FILES['file']['error']     = $_FILES['image']['error'][$i];
+          $_FILES['file']['size']     = $_FILES['image']['size'][$i];
+          
+          // File upload configuration
+          $uploadPath = 'uploads/images';
+          $config['upload_path'] = $uploadPath;
+          $config['allowed_types'] = 'jpg|jpeg|png|gif';
+          
+          // Load and initialize upload library
+          $this->load->library('upload', $config);
+          $this->upload->initialize($config);
+          
+          // Upload file to server
+          if($this->upload->do_upload('file')){
+            // Uploaded file data
+            $fileData = $this->upload->data();
+            $uploadData['image_name'] = $fileData['file_name'];
+            $uploadData['image_original_name'] = $file_name;
+            $uploadData['image_url'] = base_url($uploadPath);
+            $uploadData['image_path'] = FCPATH.$uploadPath;
+            $uploadData['created_at'] = FCPATH.$uploadPath;
+            $uploadData['updated_at'] = FCPATH.$uploadPath;
+            $this->db->insert("images",$uploadData);
+            $category_image_id = $this->db->insert_id();
+            if(!empty($post_data)){
+                $size = ["width" => $post_data["width"],"height" => $post_data["height"]];
+            }
+            $this->resizeImage($fileData,$size);
+            ///////////////////  end upload category image data ///////////////////////////
+      
+
+          } // end if do_upload
+        
+        } // end for loop
+
+        
+        
+      /////////////////////////// end upload category image data /////////////////////////
+   }
+
+   public function resizeImage($upload_data,$post_data=[]){
+
+       $imageSizeArr = $this->config->item('IMAGE_SIZE_ARRAY');
+       if(empty($post_data)){
+          $post_data = ["width" => "800","height" => "800"];
+       }
+
+       $imageSizeArr = [
+          [
+            "width" => $post_data["width"],
+            "height" => $post_data["height"],
+            "path" => "main"
+          ],
+          [
+            "width" => (($post_data["width"]-200) > 0)?($post_data["width"]-200):'640',
+            "height" => (($post_data["height"]-200) > 0)?($post_data["height"]-200):'640',
+            "path" => "large",
+          ],
+          [
+            "width" => (($post_data["width"]-400) > 0)?($post_data["width"]-400):'320',
+            "height" => (($post_data["height"]-400) > 0)?($post_data["height"]-400):'320',
+            "path" => "medium",
+          ],
+          [
+            "width" => (($post_data["width"]-600) > 0)?($post_data["width"]-600):'160',
+            "height" => (($post_data["height"]-600) > 0)?($post_data["height"]-600):'160',
+            "path" => "small",
+          ],
+          [
+            "width" => "80",
+            "height" => "80",
+            "path" => "thumb",
+          ],
+
+       ];
+       foreach($imageSizeArr as $image){
+          $file_path = $upload_data['file_path'].$image['path'];
+          if (!file_exists($file_path)){
+              mkdir($file_path, 0777, true);
+          }
+
+          $resize_conf = array(
+            'upload_path'  => realpath($upload_path),
+            'source_image' => $upload_data['full_path'], 
+            // 'new_image'    => $file_path.$upload_data['file_name'].$image['type'],
+            'new_image'    => $file_path.$upload_data['file_name'],
+            'width'        => $image['width'],
+            'height'       => $image['height']
+          );
+          $this->load->library('image_lib'); 
+          $this->image_lib->initialize($resize_conf);
+          $this->image_lib->resize();
+        } // end foreach image array
+   }
+
+   public function getPostImages(){
+		$data["languages"] = $this->data['languages'];
+		$this->load->helper('directory'); //load directory helper
+		$dir = "uploads/post/"; // Your Path to folder
+		$postImages = directory_map($dir);
+		if($this->input->is_ajax_request()){
+			$postImages = array_map('postImageUrl',$postImages);
+			echo json_encode($postImages); die;
+
+		}else{
+			$data["postImages"] = $postImages;
+			$this->load->view("admin/modal/admin_html_modal",$data);   
+		}
+		
+	}
+
     
 
 }

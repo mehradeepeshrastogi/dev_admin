@@ -2221,15 +2221,15 @@ th.text-left {
 
 
 .post_image{
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     padding: 5px;
     box-shadow: 5px 7px 4px #8a8888;
     object-fit: contain;
     cursor: pointer;
 }
-#post_image_modal_popup{
-    height: 460px;
+.post_image_modal_popup{
+    height: 400px;
     overflow-y: scroll;
 }
 
