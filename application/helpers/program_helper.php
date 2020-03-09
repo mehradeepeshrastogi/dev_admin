@@ -122,6 +122,7 @@ if (!function_exists('unlinkFile'))
 }
 
 
+
 if (!function_exists('array_multi_str'))
 {
 	function array_multi_str($arrayData,$find_key,$child_key){
@@ -163,9 +164,11 @@ if (!function_exists('array_multi_column'))
 
 
 if (!function_exists('postImageUrl'))
-{
+{	
 	function postImageUrl($arrayData){
-		return (base_url().'uploads/post/'.$arrayData);
+		$dir = "uploads/images/main/"; // Your Path to folder
+		$image_url = base_url().$dir;
+		return ($image_url.$arrayData);
 	}
 }
 
@@ -188,9 +191,44 @@ if (!function_exists('get_post_image'))
 	      data(){
 	        return {
 	          file:'',
-	          image:'',
+	          image:{},
 	          images:[],
+	          post_images_form:{
+	          	 image_id:"",
+	          	 image:"",
+	          	 image_url:"",
+	          	 image_name:"",
+	          	 image_full_url:"",
+	          },
+	          image_sizes:[
+		          {
+		          	"image":"full_size",
+		          	"size":"Full Size"
+		          },
+		          {
+		          	"image":"main",
+		          	"size":"800 * 800",
+		          },
+		          {
+		          	"image":"large",
+		          	"size":"600 * 600",
+		          },
+		          {
+		          	"image":"medium",
+		          	"size":"400 * 400",
+		          },
+				  {
+		          	"image":"small",
+		          	"size":"300 * 300",
+		          },
+				  {
+		          	"image":"thumb",
+		          	"size":"200 * 200",
+		          },
+
+	          ],
 	          flag:flag,
+	          edit_button:false,
 	          uploadImagesArr:[],
 	          post_form:{
 	          	"width":"800",
@@ -210,19 +248,9 @@ if (!function_exists('get_post_image'))
 	      methods:{
 	        getPostImages:function(){
 	          var self = this;
-	          // $('.loader').show();
-	          var data = new FormData();
-	          if($('.searchData').val() !=""){
-	            // data.append('searchData',$('.searchData').val());
-	          }
-	          
-	          // data.append('id_category',$('#id_category').val());
-	          // data.append('page',self.pagination.current_page);
-	          // data.append('per_page',self.pagination.per_page);
-	          // axios.post('admin/post/getPostImages',data)
+	          self.image = {};
 	          axios.get('admin/getPostImages').then(function (response) {
 	            self.images = response.data;
-	            console.log(self.images);
 	            $('#post_images').modal('show');
 	            // $('.loader').hide();
 	          }).catch(function (error) {
@@ -232,58 +260,58 @@ if (!function_exists('get_post_image'))
 	        },
 	        getPostImage:function(image){
 	          var self = this;
-	          self.image = image;
-	          console.log(self.image);
+	          self.post_images_form = image;
+	          self.post_images_form.image = "main";
+	          self.post_images_form.image_new_url = self.post_images_form.image_url;
+	          if(self.post_images_form.image != "full_size"){
+	          	 self.post_images_form.image_new_url = self.post_images_form.image_url+'/'+self.post_images_form.image;
+	          }
+	          self.post_images_form.image_full_url = self.post_images_form.image_new_url+'/'+self.post_images_form.image_name
+	          console.log(self.post_images_form);
 	        },
-	        uploadImages:function(event){
-	        	var self = this;
-                var formData = new FormData();
-                for ( var key in self.post_form) {
-                    formData.append(key, self.post_form[key]);
+	        deletePostImage:function(image){
+		        var self = this;
+		        var formData = new FormData();
+		        self.image = image;
+                for ( var key in self.image ) {
+                    formData.append(key, self.image[key]);
                 }
-                formData.append('image', self.uploadImagesArr);
-                const config = { 
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                }
-
-                axios.post('admin/uploadImages',formData,config).then(function (response) {
-                    console.log(response);
-           			
-                })
-                .catch(function (error) {
-                    // self.formErrors = error.response.data.errors;
-                    console.log(error);
-                    // $('.loader').hide();
-                });
-	        },
-	        onFileChange:function(e){
-	        	var self = this;
-                var form_data = new FormData();
-                var file;
-				imageLength = e.target.files.length;
-				console.log(e.target.files);
-				for(i=0;i<imageLength;i++){
-					file = e.target.files[i];
-                	// formData = ('files['+i+']',e.target.files[i]);
-				    form_data.append('files[' + i + ']', file);
-	        	}
-				// console.log(file);
-	        	console.log(form_data);
-                this.uploadImagesArr = form_data;
-	        	// console.log(this.uploadImagesArr);
-                // if(this.image.size > 1000000){
-                //     $(".btnSubmit").attr("disabled",true);
-                //     // this.formErrors = {
-                //     //     "image":["Image Size grater the 1 MB"]
-                //     // }
-                // }else{
-                //     $(".btnSubmit").attr("disabled",false);
-                //      this.formErrors = {};
-                // }
-            }
-	       
+		        axios.post('admin/deletePostImage',formData).then(function (response) {
+		            // self.images = response.data;
+		            self.getPostImages();
+		            // $('.loader').hide();
+		        }).catch(function (error) {
+		            console.log(error);
+		            // $('.loader').hide();
+		        });
+	        }
+	      
 	      }
 	    });
+
+	    $("#upload_images").on('submit', function(e){
+	        e.preventDefault();
+	        $.ajax({
+	            type: 'POST',
+	            url: AppConfig.base_url+'admin/uploadImages',
+	            data: new FormData(this),
+	            contentType: false,
+	            cache: false,
+	            processData:false,
+	            beforeSend: function(){
+	                $('#uploadStatus').html('<img src="images/uploading.gif"/>');
+	            },
+	            error:function(){
+	                $('#uploadStatus').html('<span style="color:#EA4335;">Images upload failed, please try again.<span>');
+	            },
+	            success: function(data){
+	            	app.getPostImages();
+	            	$('.post_file').val("");
+	            	$('.nav-tabs-custom').find('li:first-of-type a').click();
+	            }
+        	});
+	    });
+
 	</script>
 <?php
 	}

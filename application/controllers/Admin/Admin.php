@@ -111,8 +111,8 @@ class Admin extends DR_Controller {
 
 	 public function uploadImages(){
 	 	$post_data = $_POST;
-	 	dump($post_data);
-	 	dd($_FILES);
+	 	// dump($post_data);
+	 	// dd($_FILES);
       /////////////////////// upload category image data /////////////////////////////////
         $size = [];
         $filesCount = count($_FILES['image']['name']);
@@ -163,7 +163,7 @@ class Admin extends DR_Controller {
 
    public function resizeImage($upload_data,$post_data=[]){
 
-       $imageSizeArr = $this->config->item('IMAGE_SIZE_ARRAY');
+       // $imageSizeArr = $this->config->item('IMAGE_SIZE_ARRAY');
        if(empty($post_data)){
           $post_data = ["width" => "800","height" => "800"];
        }
@@ -196,6 +196,8 @@ class Admin extends DR_Controller {
           ],
 
        ];
+       // dd($upload_data);
+       $this->load->library('image_lib'); 
        foreach($imageSizeArr as $image){
           $file_path = $upload_data['file_path'].$image['path'];
           if (!file_exists($file_path)){
@@ -203,26 +205,28 @@ class Admin extends DR_Controller {
           }
 
           $resize_conf = array(
-            'upload_path'  => realpath($upload_path),
-            'source_image' => $upload_data['full_path'], 
+            // 'upload_path'  => realpath($file_path),
             // 'new_image'    => $file_path.$upload_data['file_name'].$image['type'],
-            'new_image'    => $file_path.$upload_data['file_name'],
+            'image_library' => 'gd2',
+            'source_image' => $upload_data['full_path'], 
+            'new_image'    => $file_path.'/'.$upload_data['file_name'],
             'width'        => $image['width'],
             'height'       => $image['height']
           );
-          $this->load->library('image_lib'); 
+          $this->image_lib->clear();
           $this->image_lib->initialize($resize_conf);
           $this->image_lib->resize();
         } // end foreach image array
    }
 
-   public function getPostImages(){
+   public function getPostImages_OLD(){
 		$data["languages"] = $this->data['languages'];
 		$this->load->helper('directory'); //load directory helper
-		$dir = "uploads/post/"; // Your Path to folder
+		$dir = "uploads/images/main/"; // Your Path to folder
 		$postImages = directory_map($dir);
 		if($this->input->is_ajax_request()){
-			$postImages = array_map('postImageUrl',$postImages);
+			$image_url = base_url().$dir;
+			$postImages = array_map('postImageUrl',$postImages,$image_url);
 			echo json_encode($postImages); die;
 
 		}else{
@@ -230,6 +234,43 @@ class Admin extends DR_Controller {
 			$this->load->view("admin/modal/admin_html_modal",$data);   
 		}
 		
+	}
+
+	 public function getPostImages(){
+		$data["languages"] = $this->data['languages'];
+		$query = $this->db->order_by("image_id","desc")->get("images");
+		if($query->num_rows() > 0){
+			
+			$resultData = $query->result_array();
+
+			if($this->input->is_ajax_request()){
+				echo json_encode($resultData); die;
+
+			}else{
+				$data["result_data"] = $resultData;
+				$this->load->view("admin/modal/admin_html_modal",$data);   
+			}
+		}
+	}
+
+	public function deletePostImage(){
+		if(!empty($_POST["image_id"])){
+			extract($_POST);
+			$imageArr = [
+				$image_path."/".$image_name,
+				$image_path."/large/".$image_name,
+				$image_path."/main/".$image_name,
+				$image_path."/medium/".$image_name,
+				$image_path."/small/".$image_name,
+				$image_path."/thumb/".$image_name,
+			];
+			foreach($imageArr as $image){
+				unlink($image);
+			}
+
+			$this->db->where(["image_id" => $image_id])->delete("images");
+			echo json_encode(["message" => "deleted successfully"]);
+		}
 	}
 
     

@@ -2228,8 +2228,8 @@ th.text-left {
     object-fit: contain;
     cursor: pointer;
 }
-.post_image_modal_popup{
-    height: 400px;
+#post_image_modal_popup{
+    height: 460px;
     overflow-y: scroll;
 }
 
@@ -2242,4 +2242,8 @@ th.text-left {
     height: 100%;
     overflow-y: scroll;
   }
+}
+
+.img-preview{
+  width: 100%; height: 200px; object-fit: contain; border: 1px solid gray;
 }

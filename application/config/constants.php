@@ -89,7 +89,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('SITE_NAME','IQ-Office');
 define('HOST_NAME','localhost');
 define('USER_NAME','root');
-define('PASSWORD','root');
+define('PASSWORD','info@123');
 // define('PASSWORD','mOKYgZQW0f');
 define('DATABASE','dev_admin');
 define('PORT','');

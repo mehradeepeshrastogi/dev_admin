@@ -90,6 +90,7 @@ $route['admin/page/updateStatus']  = $route['admin/post/updateStatus'] ='Admin/P
 
 $route['admin/getPostImages']  ='Admin/admin/getPostImages';
 $route['admin/uploadImages']  ='Admin/admin/uploadImages';
+$route['admin/deletePostImage']  ='Admin/admin/deletePostImage';
 
 
 // $route['admin/page']  = 'Admin/Page/Page';

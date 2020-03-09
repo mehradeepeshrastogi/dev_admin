@@ -8,10 +8,10 @@
           <h4 class="modal-title">Modal Header</h4>
         </div>
         <div class="modal-body">
-          <div class="col-md-2">
+          <!-- <div class="col-md-2">
               <div id="clbk" class="demo"></div>
-          </div>
-          <div class="col-md-10">
+          </div> -->
+          <div class="col-md-12">
 
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -29,26 +29,38 @@
 
                             <div class="col-md-9 post_image_modal_popup">
                                 <div class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
-                                    <label :for="col"><img v-bind:src="val" class="post_image" v-on:click="getPostImage(val);"/></label>
+                                    <label :for="col"><img v-bind:title="val.image_original_name" v-bind:src="val.image_url+'/'+val.image_name" class="post_image" v-on:click="getPostImage(val);"/></label>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <form v-if="image!=''">
+                                <form v-if="!post_images_form.image_id">
+                                </form>
+                                <form v-else v-on:submit.prevent="setPostImage">
                                     <div class="form-group">
+                                      <div>
+                                        <img v-bind:title="post_images_form.image_original_name" v-bind:src="post_images_form.image_full_url" class="img img-thumbnail img-preview" v-on:click="getPostImage(post_images_form);"/>
+                                      </div>
+                                      <label>Choose Image Size</label>
+                                        <select class="form-control" v-modal="post_images_form.image">
+                                            <option v-for="(img_size, index) in image_sizes" :key="index" :value="img_size.image"> {{img_size.size}}</option>   
+                                        </select>
                                       <label>Image URL</label>
-                                      <input type="text" class="form-control" v-model="image">
+                                      <input type="text" class="form-control" v-model="post_images_form.image_full_url">
                                     </div>
-                                    <button type="button" class="btn btn-danger" v-on:click="deletePostImage(image);">DELETE PERMANENT</button>
+                                    <button type="submit" class="btn btn-info">SELECT</button>
+                                    <button type="button" class="btn btn-danger" v-on:click="deletePostImage(post_images_form);">DELETE PERMANENT</button>
                                 </form>
                             </div>
                         </div>
 
                         <div class="tab-pane" id="uploadImages">
-                          <form v-on:submit.prevent="uploadImages"  method="POST" enctype="multipart/form-data">
+                          <form id="upload_images"  method="POST" enctype="multipart/form-data">
                            <div class="col-md-9 post_image_modal_popup">
                              <div class="form-group">
                                 <label>Image URL</label>
-                                <input type="file" name="multiple_images" @change="onFileChange" multiple="">
+                                <input type="hidden" name="width" value="800">
+                                <input type="hidden" name="height" value="800">
+                                <input type="file" class="post_file" name="image[]" multiple="" required="">
                               </div>
                                <button type="submit" class="btn btn-info">UPLOAD</button>
                             </div>

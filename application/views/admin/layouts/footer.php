@@ -53,6 +53,7 @@
 
 <script src="<?php echo ADMIN_URL_FILE; ?>js/axios.min.js"></script>
 <script src="<?php echo ADMIN_URL_FILE; ?>js/vue.js"></script>
+<script src="<?php echo ADMIN_URL_FILE; ?>js/vue-upload-multiple-image.js"></script>
 
 
 <script src="<?php echo ADMIN_URL_FILE; ?>js/jquery.multiselect.js"></script>
