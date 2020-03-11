@@ -56,7 +56,7 @@
 
             <!-- form start -->
             <form role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
-
+              <input type="hidden" name="post_image" id="post_image">
           
               <div class="box-body">
                 <!-- start tab content-->
@@ -292,7 +292,7 @@
                 <!-- start tab content-->
                   <h3>Featured Image</h3>
                   <div class="form-group">
-                    <img title="BonJob_searchSeeker.png" src="http://localhost/dev_admin/uploads/images/1583751257BonJob_searchSeeker.png" class="img img-thumbnail img-preview">
+                    <img v-bind:title="post_images_form.image_original_name" v-bind:src="post_images_form.image_full_url" class="img img-thumbnail img-preview">
                   </div>
                   <button v-if="edit_button == true" type="button" class="btn btn-primary" v-on:click="getPostImages();">Edit Image</button>
                   <button v-else type="button" class="btn btn-primary" id="post_image_btn"  v-on:click="getPostImages();">Choose Image</button>

@@ -41,7 +41,7 @@
                                         <img v-bind:title="post_images_form.image_original_name" v-bind:src="post_images_form.image_full_url" class="img img-thumbnail img-preview" v-on:click="getPostImage(post_images_form);"/>
                                       </div>
                                       <label>Choose Image Size</label>
-                                        <select class="form-control" v-modal="post_images_form.image">
+                                        <select class="form-control" v-modal="post_images_form.image" @change="changeImageSize($event);" >
                                             <option v-for="(img_size, index) in image_sizes" :key="index" :value="img_size.image"> {{img_size.size}}</option>   
                                         </select>
                                       <label>Image URL</label>

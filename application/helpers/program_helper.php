@@ -195,10 +195,11 @@ if (!function_exists('get_post_image'))
 	          images:[],
 	          post_images_form:{
 	          	 image_id:"",
-	          	 image:"",
+	          	 image:"main",
 	          	 image_url:"",
 	          	 image_name:"",
-	          	 image_full_url:"",
+	          	 image_full_url:axios.defaults.baseURL+"assets/images/no-image.jpg",
+	          	 image_new_url:""
 	          },
 	          image_sizes:[
 		          {
@@ -261,12 +262,16 @@ if (!function_exists('get_post_image'))
 	        getPostImage:function(image){
 	          var self = this;
 	          self.post_images_form = image;
-	          self.post_images_form.image = "main";
+	          if(self.post_images_form.image == undefined){
+	          		self.post_images_form.image = "main";
+	          }
 	          self.post_images_form.image_new_url = self.post_images_form.image_url;
 	          if(self.post_images_form.image != "full_size"){
 	          	 self.post_images_form.image_new_url = self.post_images_form.image_url+'/'+self.post_images_form.image;
+	          }else{
+	          	 self.post_images_form.image_new_url = self.post_images_form.image_url;
 	          }
-	          self.post_images_form.image_full_url = self.post_images_form.image_new_url+'/'+self.post_images_form.image_name
+	          self.post_images_form.image_full_url = self.post_images_form.image_new_url+'/'+self.post_images_form.image_name;
 	          console.log(self.post_images_form);
 	        },
 	        deletePostImage:function(image){
@@ -284,9 +289,37 @@ if (!function_exists('get_post_image'))
 		            console.log(error);
 		            // $('.loader').hide();
 		        });
-	        }
+	        },
+	        changeImageSize:function(){
+	        	var self = this;
+	        	var size = event.target.value;
+	        	self.post_images_form.image = size;
+	        	self.getPostImage(self.post_images_form);
+	        	// console.log(self.post_images_form);
+	        },
+	        setPostImage:function(){
+	        	var self = this;
+                self.edit_button = true;
+                if(self.flag == true){
+                	self.setLink(self.post_images_form.image_full_url);
+                }else{
+                	$('#post_image').val(self.post_images_form.image_full_url);
+		        	$('#post_images').modal('hide');
+                }
+	        },
+	        deleteFeatureImages:function(){
+	        	var self = this;
+	        	self.edit_button = false;
+	        	self.post_images_form = {};
+	        	self.post_images_form.image_full_url = axios.defaults.baseURL+"assets/images/no-image.jpg";
+	        	$('#post_image').val('');
+	        },
+	        setLink:function(url) {
+	        	window.opener.CKEDITOR.tools.callFunction(1, url);
+				window.close();
+			}
 	      
-	      }
+	      } // end method
 	    });
 
 	    $("#upload_images").on('submit', function(e){

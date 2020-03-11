@@ -28,6 +28,7 @@ Class PostModel extends DR_Model {
                 'short_order' => $postData['short_order'],
                 'active' => $postData['active'],
                 'post_type' => $postData['post_type'],
+                'post_image' => $postData['post_image'],
                 'created_at' => $this->current_datetime,
                 'updated_at' => $this->current_datetime
             ];
@@ -131,7 +132,7 @@ Class PostModel extends DR_Model {
         
         $query = $this->db->select('p.post_id,p.active,pl.name')->from('post as p')
         ->join('post_lang as pl','pl.post_id = p.post_id','left')
-        ->limit($limit,$start)->where([ 'pl.lang_id' => $this->lang_id ])->order_by('short_order','asc')->get();
+        ->limit($limit,$start)->where([ 'pl.lang_id' => $this->lang_id ])->order_by('short_order','asc')->order_by("post_id","desc")->get();
         $result = $query->num_rows();
         if ($result > 0) {
             $resultData = $query->result();
