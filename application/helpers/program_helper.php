@@ -173,6 +173,39 @@ if (!function_exists('postImageUrl'))
 }
 
 
+if (!function_exists('feature_image_html'))
+{	
+	function feature_image_html(){
+	?>
+		<!-- general form elements -->
+          <div class="box box-primary">
+
+              <div class="box-header with-border">
+                 
+              </div>
+            <!-- /.box-header -->
+
+              <div class="box-body">
+                <!-- start tab content-->
+                  <h3>Featured Image</h3>
+                  <div class="form-group">
+                    <img v-bind:title="post_images_form.image_original_name" v-bind:src="post_images_form.image_full_url" class="img img-thumbnail img-preview">
+                  </div>
+                  <button v-if="edit_button == true" type="button" class="btn btn-primary" v-on:click="getPostImages();">Edit Image</button>
+                  <button v-else type="button" class="btn btn-primary" id="post_image_btn"  v-on:click="getPostImages();">Choose Image</button>
+
+                  <button type="button" class="btn btn-danger" v-on:click="deleteFeatureImages();">Delete image</button>
+
+              </div>  <!-- end tab-content-->  
+              <!-- /.box-body -->
+
+          </div>
+          <!-- /.box -->
+	<?php
+		require_once APPPATH."views/admin/modal/admin_popup_modal.php";	
+	}
+}
+ 
 
 if (!function_exists('get_post_image'))
 {

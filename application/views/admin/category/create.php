@@ -23,7 +23,7 @@
 		    </div>
 
         <!-- left column -->
-        <div class="col-md-12">
+        <div class="col-md-9">
           <!-- general form elements -->
           <div class="box box-primary">
 
@@ -53,6 +53,7 @@
 
             <!-- form start -->
             <form role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
+              <input type="hidden" name="post_image" id="post_image">
 
 
             <!-- box body start -->
@@ -174,6 +175,12 @@
           </div>
           <!-- /.box -->
         </div>
+        <!--/.col (left) -->
+
+          <!-- left column -->
+        <div class="col-md-3">
+            <?php feature_image_html(); ?>
+        </div>
         <!--/.col (right) -->
       
       </div>
@@ -181,6 +188,8 @@
       
     </section>
     <!-- /.content -->
+
+     <?php //require_once APPPATH."views/admin/modal/admin_popup_modal.php"; ?>
     
   </div>
   <!-- /.content-wrapper -->

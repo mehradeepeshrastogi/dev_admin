@@ -199,7 +199,7 @@ $('.switchLang').on('change', function (e) {
 
 
 <?php 
-  if(in_array($this->post_type,["post","page"]) && in_array($this->method,["create","edit"]))
+  if(in_array($this->post_type,["post","page","category"]) && in_array($this->method,["create","edit"]))
   {
     ?>
       <script type="text/javascript">
