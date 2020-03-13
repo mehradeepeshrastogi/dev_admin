@@ -78,7 +78,7 @@
                       <td><?php echo @$user->phone; ?></td>
                       <td>
                         <form action="<?php echo base_url($this->controllerFor.'/user/updateStatus');?>" method="post">
-                        <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+                       
                             <?php if($user->active == "1"){ ?>
                               <input type="hidden" name="active" value="0">
                               <button type="submit" name="id" value="<?php echo $user->user_id;?>" title="<?php echo trans('inactive');?>" class="btn btn-success"><i class="fa fa-thumbs-up"></i></button>

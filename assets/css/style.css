@@ -2254,4 +2254,16 @@ th.text-left {
 .post_image_modal_popup{
   height: 400px;
   overflow-y: scroll;
-}    
+}
+
+.img-div{
+    width: 200px; 
+    height: 200px; 
+    object-fit: contain; 
+    border: 1px solid gray;
+    cursor:pointer;
+}
+.slug-form-control{
+    width: 70%;
+    display: inline-block;
+}

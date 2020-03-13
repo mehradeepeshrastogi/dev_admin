@@ -79,7 +79,8 @@ class Category extends Admin {
 				$post_id = $this->PostModel->createPost($postData);
 				if(!empty($post_id)){
 					$this->session->set_flashdata('success', trans('category_created'));
-		            redirect($_SERVER['HTTP_REFERER']);	
+		            // redirect($_SERVER['HTTP_REFERER']);	
+		            redirect($this->controllerFor.'/'.strtolower($this->class));
 				}else{
 					$this->session->set_flashdata('error', trans('something_wrong'));
 					redirect($_SERVER['HTTP_REFERER']);

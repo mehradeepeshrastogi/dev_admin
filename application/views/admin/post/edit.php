@@ -2,7 +2,7 @@
  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1><?php echo trans('add_page');?></h1>
+      <h1><?php echo $title;?></h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i><?php echo $title;?></a></li>
       </ol>
@@ -23,7 +23,7 @@
         </div>
 
         <!-- left column -->
-        <div class="col-md-12">
+        <div class="col-md-9">
           <!-- general form elements -->
           <div class="box box-primary">
 
@@ -48,13 +48,14 @@
                     <li class="active"><a href="#Page" data-toggle="tab"><?php echo trans('page');?></a></li>
                     <li><a href="#DescriptionShort" data-toggle="tab"><?php echo trans('short_description');?></a></li>
                     <li><a href="#Description" data-toggle="tab"><?php echo trans('description');?></a></li>
+                    <li><a href="#MetaDescription" data-toggle="tab"><?php echo trans('meta_description');?></a></li>
                 </ul>
             </div>
 
 
             <!-- form start -->
             <form role="form" action="<?php echo $form_action; ?>" method="POST" enctype="multipart/form-data">
-
+               <input type="hidden" name="post_image" id="post_image" value="<?php echo $post[0]->post_image;?>">
           
               <div class="box-body">
                 <!-- start tab content-->
@@ -87,7 +88,7 @@
                       <div class="form-group">
                       <label for="<?php echo trans('slug');?>"><?php echo trans('slug');?>:</label>
                       <?php foreach($languages as $k=>$language): ?>
-                      <span style="display: block;"><?php echo base_url();?><input type="text" class="form-control" name="slug[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->slug; ?>" placeholder="<?php echo trans('slug');?>" style="width: 77.7%;display: inline-block;">
+                      <span style="display: block;"><?php echo base_url();?><input type="text" class="form-control slug-form-control" name="slug[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->slug; ?>" placeholder="<?php echo trans('slug');?>">
                       </span>
                       <?php endforeach; ?>
 
@@ -142,6 +143,60 @@
                   </div>
 
 
+                    <div class="tab-pane" id="MetaDescription">
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label for="<?php echo trans('language');?>"><?php echo trans('language');?></label>
+                          <?php foreach($languages as $k=>$language): ?>
+                            <input type="text" class="form-control" value="<?php echo trans($language->name);?>" readonly>
+                          <?php endforeach; ?>
+                        </div>
+                      </div>
+                      <div class="col-md-10">
+                          <div class="form-group">
+                                <label for="<?php echo trans('meta_title');?>"><?php echo trans('meta_title');?></label>
+                                <?php foreach($languages as $language): ?>
+                                    <input type="text" class="form-control" name="meta_title[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->meta_title; ?>" placeholder="<?php echo trans('meta_title');?>">
+                                <?php endforeach; ?>
+                          </div>
+                      </div>
+
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label for="<?php echo trans('language');?>"><?php echo trans('language');?></label>
+                          <?php foreach($languages as $k=>$language): ?>
+                            <input type="text" class="form-control" value="<?php echo trans($language->name);?>" readonly>
+                          <?php endforeach; ?>
+                        </div>
+                      </div>
+                      <div class="col-md-10">
+                            <div class="form-group">
+                                  <label for="<?php echo trans('meta_keyword');?>"><?php echo trans('meta_keyword');?></label>
+                                  <?php foreach($languages as $language): ?>
+                                      <input type="text" class="form-control" name="meta_keyword[<?php echo $language->lang_id;?>]" value="<?php echo $post[$k]->meta_keyword; ?>" placeholder="<?php echo trans('meta_keyword');?>">
+                                  <?php endforeach; ?>
+                            </div>
+                      </div>
+
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label for="<?php echo trans('language');?>"><?php echo trans('language');?></label>
+                          <?php foreach($languages as $k=>$language): ?>
+                            <input type="text" class="form-control" value="<?php echo trans($language->name);?>" readonly style="height:50px;">
+                          <?php endforeach; ?>
+                        </div>
+                      </div>
+                       <div class="col-md-10">
+                            <div class="form-group">
+                                  <label for="<?php echo trans('meta_description');?>"><?php echo trans('meta_description');?></label>
+                                  <?php foreach($languages as $language): ?>
+                                      <textarea type="text" class="form-control" name="meta_description[<?php echo $language->lang_id;?>]" placeholder="<?php echo trans('meta_description');?>"><?php echo $post[$k]->meta_description; ?></textarea>
+                                  <?php endforeach; ?>
+                            </div>
+                        </div>
+                  </div> <!-- end meta description-->
+
+
                   
               </div>
 
@@ -157,6 +212,12 @@
 
           </div>
           <!-- /.box -->
+        </div>
+        <!--/.col (left) -->
+
+          <!-- right column -->
+        <div class="col-md-3">
+            <?php feature_image_html();?>
         </div>
         <!--/.col (right) -->
       

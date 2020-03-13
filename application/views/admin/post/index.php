@@ -67,13 +67,17 @@
                 <tbody class="tbody">
                 <?php 
                 if(!empty($results)){
-                  foreach($results as $key=>$post){ 
+                  foreach($results as $key=>$post){
+                    $slug = "";
+                   if(!empty($post->slug)){
+                      $slug = "<a href='".$post->slug."' target='_blank'>".$post->slug."</a>";
+                   }
                 ?>
                     <tr>
                       <td><?php echo $post->post_id; ?></td>
                      
                       <td><?php echo $post->name; ?></td>
-                      <td><?php //echo $post->slug; ?></td>
+                      <td><?php echo $slug;?></td>
                       <td>
                         <form action="<?php echo base_url($this->controllerFor.'/post/updateStatus');?>" method="post">
                             <?php if($post->active == 1){ ?>

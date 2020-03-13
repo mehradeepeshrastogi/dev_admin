@@ -209,16 +209,21 @@ if (!function_exists('feature_image_html'))
 
 if (!function_exists('get_post_image'))
 {
-	function get_post_image($flag=false){
+	function get_post_image($flag=false,$image_url=null){
 ?>
 
 	<script type="text/javascript">
 
 
 		var flag = '<?php echo $flag;?>';
+		var edit_image_url = '<?php echo $image_url;?>';
+		var delete_message = '<?php echo trans("delete_message");?>';
 	    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	    axios.defaults.baseURL = window.location.protocol+"//"+window.location.hostname+'/'+window.location.pathname.split("/")[1]+'/';
 	    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+		if(edit_image_url == null || edit_image_url == ''){
+			edit_image_url = axios.defaults.baseURL+"assets/images/no-image.jpg";
+		}
 	    var app = new Vue({
 	      el: '.content-wrapper',
 	      data(){
@@ -231,7 +236,7 @@ if (!function_exists('get_post_image'))
 	          	 image:"main",
 	          	 image_url:"",
 	          	 image_name:"",
-	          	 image_full_url:axios.defaults.baseURL+"assets/images/no-image.jpg",
+	          	 image_full_url:edit_image_url,
 	          	 image_new_url:""
 	          },
 	          image_sizes:[
@@ -309,19 +314,21 @@ if (!function_exists('get_post_image'))
 	        },
 	        deletePostImage:function(image){
 		        var self = this;
-		        var formData = new FormData();
-		        self.image = image;
-                for ( var key in self.image ) {
-                    formData.append(key, self.image[key]);
-                }
-		        axios.post('admin/deletePostImage',formData).then(function (response) {
-		            // self.images = response.data;
-		            self.getPostImages();
-		            // $('.loader').hide();
-		        }).catch(function (error) {
-		            console.log(error);
-		            // $('.loader').hide();
-		        });
+		       	if(confirm(delete_message)){
+			        var formData = new FormData();
+			        self.image = image;
+	                for ( var key in self.image ) {
+	                    formData.append(key, self.image[key]);
+	                }
+			        axios.post('admin/deletePostImage',formData).then(function (response) {
+			            // self.images = response.data;
+			            self.getPostImages();
+			            // $('.loader').hide();
+			        }).catch(function (error) {
+			            console.log(error);
+			            // $('.loader').hide();
+			        });
+		    	}
 	        },
 	        changeImageSize:function(){
 	        	var self = this;

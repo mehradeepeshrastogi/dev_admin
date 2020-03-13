@@ -46,6 +46,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#Page" data-toggle="tab"><?php echo trans('page');?></a></li>
+                    <li><a href="#Images" data-toggle="tab"><?php echo trans('images');?></a></li>
                     <li><a href="#DescriptionShort" data-toggle="tab"><?php echo trans('short_description');?></a></li>
                     <li><a href="#Description" data-toggle="tab"><?php echo trans('description');?></a></li>
                     <li><a href="#MetaDescription" data-toggle="tab"><?php echo trans('meta_description');?></a></li>
@@ -98,7 +99,7 @@
                       <div class="form-group">
                       <label for="<?php echo trans('slug');?>"><?php echo trans('slug');?>:</label>
                       <?php foreach($languages as $k=>$language): ?>
-                      <span style="display: block;"><?php echo base_url();?><input type="text" class="form-control slug-form-control" name="slug[<?php echo $language->lang_id;?>]" value="<?php echo set_value('slug['.$language->lang_id.']'); ?>" placeholder="<?php echo trans('slug');?>">
+                      <span style="display: block;"><?php echo base_url();?><input type="text" class="form-control" name="slug[<?php echo $language->lang_id;?>]" value="<?php echo set_value('slug['.$language->lang_id.']'); ?>" placeholder="<?php echo trans('slug');?>" style="width: 77.7%;display: inline-block;">
                       </span>
                       <?php endforeach; ?>
 
@@ -126,7 +127,48 @@
                     </div>
                 </div>
 
+                 <div class="tab-pane" id="Images">
+                         <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="exampleInputFile"><?php echo trans('images');?></label>
+                          <br>
+                        <div style="over-flow-x:scroll">
+                            <table class="table">
+                              <tr>
+                              </tr>
+                            
+                              <tr>
+                                  <th></th>
+                                  <?php
+                                  for($i=1; $i<=$image_range;$i++){
+                                   
+                                  ?>
+                                    <td>
+                                      <img src="<?php echo $defaultImage; ?>" class="img img-thumbnail defaultImage" id="previewImage<?php echo $i;?>"/>
+                                      <input type="file" id="selectImage<?php echo $i;?>" data-num="<?php echo $i; ?>" name="image[]" class="imageFile">
+                                     
+                                     
+                                      <?php foreach($languages as $k=>$language): ?>
+                                          <input title="<?php echo trans($language->name);?>" type="text" class="form-control" name="image_name[<?php echo $language->lang_id;?>][<?php echo $i-1;?>]"  value="<?php echo set_value('image_name['.$language->lang_id.']['.$i.']'); ?>" placeholder="<?php echo trans('image_title');?>">
+                                      <?php endforeach; ?>
 
+
+                                      <input type="radio" name="cover_image" <?php echo ((set_value('cover_image') == $i-1))?'checked':($i==1)?'checked':'';?> value="<?php echo $i-1;?>"> <?php echo trans('set_as_cover_image');?>
+                                    
+                                   </td>
+                                  
+                                  <?php 
+                                    if($i%4 == 0){
+                                        echo "</tr><tr> <th></th>";
+                                    } 
+                                  }
+                                  ?>
+                              </tr>
+                            </table>
+                        </div>
+                      </div>
+                  </div>
+                 </div>
 
                   <div class="tab-pane" id="DescriptionShort">
                         <div class="col-md-2">

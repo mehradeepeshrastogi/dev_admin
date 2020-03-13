@@ -219,7 +219,9 @@ $('.switchLang').on('change', function (e) {
           /* END JS TREE FOR DIRECTRY STRUCTURE */
       </script>
     <?php
-      get_post_image();
+      $flag = false;
+      $image_url = !empty($post[0]->post_image)?$post[0]->post_image:'';
+      get_post_image($flag,$image_url);
   }
 ?>
 

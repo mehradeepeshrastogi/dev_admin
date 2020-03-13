@@ -41,12 +41,13 @@ Class PostModel extends DR_Model {
                     $meta_title = !empty($postData['meta_title'][$language->lang_id])?$postData['meta_title'][$language->lang_id]:'';
                     $meta_keyword = !empty($postData['meta_keyword'][$language->lang_id])?$postData['meta_keyword'][$language->lang_id]:'';
                     $meta_description = !empty($postData['meta_description'][$language->lang_id])?$postData['meta_description'][$language->lang_id]:'';
+                    $slug = !empty($postData['slug'][$language->lang_id])?$postData['slug'][$language->lang_id]:'';
                     $postLang[] = [
                         'post_id' => $post_id,
                         'name' => $postData['name'][$language->lang_id],
                         'description_short' => $description_short,
                         'description' => $description,
-                        'slug' => $postData['slug'][$language->lang_id],
+                        'slug' => $slug,
                         'meta_title' => $meta_title,
                         'meta_keyword' => $meta_keyword,
                         'meta_description' => $meta_description,
@@ -64,6 +65,7 @@ Class PostModel extends DR_Model {
                 'short_order' => $postData['short_order'],
                 'active' => $postData['active'],
                 'post_type' => $postData['post_type'],
+                'post_image' => $postData['post_image'],
                 'created_at' => $this->current_datetime,
                 'updated_at' => $this->current_datetime
             ];
@@ -76,12 +78,13 @@ Class PostModel extends DR_Model {
                     $meta_title = !empty($postData['meta_title'][$language->lang_id])?$postData['meta_title'][$language->lang_id]:'';
                     $meta_keyword = !empty($postData['meta_keyword'][$language->lang_id])?$postData['meta_keyword'][$language->lang_id]:'';
                     $meta_description = !empty($postData['meta_description'][$language->lang_id])?$postData['meta_description'][$language->lang_id]:'';
+                    $slug = !empty($postData['slug'][$language->lang_id])?$postData['slug'][$language->lang_id]:'';
                     $postLang[] = [
                         'post_id' => $post_id,
                         'name' => $postData['name'][$language->lang_id],
                         'description_short' => $description_short,
                         'description' => $description,
-                        'slug' => $postData['slug'][$language->lang_id],
+                        'slug' => $slug,
                         'meta_title' => $meta_title,
                         'meta_keyword' => $meta_keyword,
                         'meta_description' => $meta_description,
@@ -129,8 +132,8 @@ Class PostModel extends DR_Model {
                 $this->db->where(["p.post_type" => $condition["post_type"]]);
             }
         }
-        
-        $query = $this->db->select('p.post_id,p.active,pl.name')->from('post as p')
+    
+        $query = $this->db->select("p.post_id, p.active, pl.name,IFNULL(concat('".base_url()."',pl.slug),'') as slug")->from('post as p')
         ->join('post_lang as pl','pl.post_id = p.post_id','left')
         ->limit($limit,$start)->where([ 'pl.lang_id' => $this->lang_id ])->order_by('short_order','asc')->order_by("post_id","desc")->get();
         $result = $query->num_rows();

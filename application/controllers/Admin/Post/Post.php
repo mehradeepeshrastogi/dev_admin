@@ -88,7 +88,8 @@ class Post extends Admin {
 						$this->postFiles($_FILES,$post_id);
 					}
 					$this->session->set_flashdata('success', trans($this->post_type.'_created'));
-		            redirect($_SERVER['HTTP_REFERER']);	
+						redirect($this->controllerFor.'/'.strtolower($this->class));
+		            // redirect($_SERVER['HTTP_REFERER']);	
 				}else{
 					$this->session->set_flashdata('error', trans('something_wrong'));
 					redirect($_SERVER['HTTP_REFERER']);
