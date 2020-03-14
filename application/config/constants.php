@@ -89,8 +89,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('SITE_NAME','IQ-Office');
 define('HOST_NAME','localhost');
 define('USER_NAME','root');
-define('PASSWORD','info@123');
-// define('PASSWORD','mOKYgZQW0f');
+define('PASSWORD','root');
+// define('PASSWORD','info@123');
 define('DATABASE','dev_admin');
 define('PORT','');
 define('SITE_URL','http://'.$_SERVER['SERVER_NAME'].PORT.dirname($_SERVER['SCRIPT_NAME']).'/');

@@ -28,7 +28,7 @@
                       <div class="active tab-pane" id="AllImages" >
 
                             <div class="col-md-9 post_image_modal_popup">
-                                <div class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
+                                <div v-else class="form-group col-md-2" v-for="(val,col) in images" v-if="exception.indexOf(col)==-1">
                                     <label :for="col"><img v-bind:title="val.image_original_name" v-bind:src="val.image_url+'/'+val.image_name" class="post_image" v-on:click="getPostImage(val);"/></label>
                                 </div>
                             </div>
