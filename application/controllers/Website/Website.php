@@ -23,11 +23,7 @@ class Website extends DR_Controller {
 
 		$this->controllerName = 'website';
 		$this->controllerFor = 'website';
-		// $exceptMethod = ['login','isAdminLogin'];
 		
-		// if(! in_array($this->method,$exceptMethod)){
-		// 	$this->data['adminData'] = $this->isAdminLogin();
-		// }
 	}
 
 	/* 
@@ -36,8 +32,11 @@ class Website extends DR_Controller {
 	public function index($slug=null)
 	{
 		$post_type = "home";
+		$post_id = null;
 		if(!empty($slug)){
-			$post_type = $this->website_modal->getPostType($slug);
+			$post= $this->website_modal->getPost($slug);
+			$post_type = $post["post_type"];
+			$post_id = $post["post_id"];
 		}
 
 		############# post type = 1 (Post) ###############
@@ -48,6 +47,7 @@ class Website extends DR_Controller {
 			
 			case '2':
 				######### $post_type = 2 (category) ########
+				$this->category($post_id);
 				break;
 
 			case '3':
@@ -56,9 +56,33 @@ class Website extends DR_Controller {
 
 			default:
 				# home page
+				$this->home();
 				break;
 		}
+
 		dd($this->data);
+	}
+
+	public function home(){
+		$this->data["slider"] = "slider,description";
+		$this->data["services"] = "services list";
+		$this->data["display_blog"] = "popular,new,feature";
+		$this->data["tips"] = "popular,new,feature";
+		$this->data["footer_blog"] = "popular,new,feature";
+		$this->data["resource_footer"] = "popular,new,feature";
+		$this->data["footer_testimonials"] = "popular,new,feature";
+		$this->data["footer_social"] = "popular,new,feature";
+	}
+
+	public function category($post_id=null,$slug=null){
+		if(!empty($post_id)){
+			$this->db->where(["post_id" => $post_id,"pl.lang_id" => $this->lang_id]);	
+		}
+		if(!empty($slug)){
+			$this->db->where(["pl.slug" => $slug,"pl.lang_id" => $this->lang_id]);
+		}
+
+
 	}
 
 	public function about(){
